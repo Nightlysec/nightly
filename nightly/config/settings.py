@@ -107,8 +107,10 @@ class RuntimeSettings(BaseSettings):
 
     image: str = Field(
         # Points at the upstream Strix sandbox image — there is no published
-        # "nightly-sandbox" image. Build your own via scripts/docker.sh and
-        # point this at it (or set NIGHTLY_IMAGE) once you have one.
+        # "nightly-sandbox" image yet. .github/workflows/docker-sandbox.yml
+        # will build and push ghcr.io/<owner>/nightly-sandbox once this repo
+        # is published and a version tag is pushed; point this at it (or set
+        # NIGHTLY_IMAGE) then. Until then, build locally via scripts/docker.sh.
         default="ghcr.io/usestrix/strix-sandbox:1.3.0",
         alias="NIGHTLY_IMAGE",
     )

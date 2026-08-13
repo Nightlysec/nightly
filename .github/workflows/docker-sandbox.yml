@@ -1,0 +1,43 @@
+name: Build & Publish Sandbox Image
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Log in to GHCR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+        run: echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin
+
+      - name: Build and push
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/nightly-sandbox
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          tags=("$IMAGE:latest")
+          if [[ "$REF_TYPE" == "tag" ]]; then
+            tags+=("$IMAGE:${REF_NAME#v}")
+          fi
+
+          build_args=()
+          for t in "${tags[@]}"; do build_args+=(-t "$t"); done
+          docker build -f containers/Dockerfile "${build_args[@]}" .
+
+          for t in "${tags[@]}"; do docker push "$t"; done
