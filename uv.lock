@@ -1375,7 +1375,7 @@ wheels = [
 
 [[package]]
 name = "nightly-agent"
-version = "1.5.1"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "caido-sdk-client" },
