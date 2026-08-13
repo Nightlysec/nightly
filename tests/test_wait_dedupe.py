@@ -17,9 +17,9 @@ import pytest
 from agents import RunContextWrapper
 from agents.tool_context import ToolContext
 
-from strix.core.agents import AgentCoordinator
-from strix.core.hooks import LLM_TURN_KEY, ReportUsageHooks
-from strix.tools.agents_graph.tools import wait_for_agents
+from nightly.core.agents import AgentCoordinator
+from nightly.core.hooks import LLM_TURN_KEY, ReportUsageHooks
+from nightly.tools.agents_graph.tools import wait_for_agents
 
 
 if TYPE_CHECKING:
@@ -33,14 +33,14 @@ _WAIT_SECONDS = 2
 def _fast_wait(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
     # The real ceiling is 300s per wait; the shape of the bug is the same.
     monkeypatch.setattr(
-        "strix.tools.agents_graph.tools._WAIT_DEFAULT_TIMEOUT_S", _WAIT_SECONDS, raising=True
+        "nightly.tools.agents_graph.tools._WAIT_DEFAULT_TIMEOUT_S", _WAIT_SECONDS, raising=True
     )
     yield
 
 
 async def _context() -> dict[str, Any]:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     return {"agent_id": "root", "coordinator": coordinator}
 
 

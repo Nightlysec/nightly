@@ -1,4 +1,4 @@
-"""Tests for strix.report.writer artifact helpers."""
+"""Tests for nightly.report.writer artifact helpers."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
-from strix.report.writer import (
+from nightly.report.writer import (
     read_run_record,
     render_vulnerability_md,
     write_executive_report,

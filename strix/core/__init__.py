@@ -1,1 +1,0 @@
-"""Strix scan runtime core."""

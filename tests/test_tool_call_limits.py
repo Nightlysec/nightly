@@ -20,9 +20,9 @@ from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
 from agents.run import RunConfig
 from openai import AsyncOpenAI
 
-from strix.config import loader
-from strix.config.loader import load_settings
-from strix.config.models import StrixProvider, _NonStreamingModel, _TurnGuardModel
+from nightly.config import loader
+from nightly.config.loader import load_settings
+from nightly.config.models import NightlyProvider, _NonStreamingModel, _TurnGuardModel
 
 
 if TYPE_CHECKING:
@@ -164,7 +164,7 @@ async def test_response_below_the_cap_is_untouched(runaway_gateway: str) -> None
 
 @pytest.fixture
 def _reset_settings(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
-    for key in ("STRIX_LLM", "LLM_DISABLE_STREAMING", "LLM_MAX_TOOL_CALLS_PER_TURN"):
+    for key in ("NIGHTLY_LLM", "LLM_DISABLE_STREAMING", "LLM_MAX_TOOL_CALLS_PER_TURN"):
         monkeypatch.delenv(key, raising=False)
     monkeypatch.setattr(loader, "_cached", None)
     monkeypatch.setattr(loader, "_override", None)
@@ -180,10 +180,10 @@ class _DummyModel(Model):
 
 
 def test_cap_is_configurable(monkeypatch: pytest.MonkeyPatch, _reset_settings: None) -> None:
-    monkeypatch.setattr("strix.config.models.MultiProvider.get_model", lambda *_: _DummyModel())
+    monkeypatch.setattr("nightly.config.models.MultiProvider.get_model", lambda *_: _DummyModel())
     monkeypatch.setenv("LLM_MAX_TOOL_CALLS_PER_TURN", "7")
     load_settings()
 
-    model = StrixProvider().get_model("openai/gpt-4o-mini")
+    model = NightlyProvider().get_model("openai/gpt-4o-mini")
     assert isinstance(model, _TurnGuardModel)
     assert model._max_tool_calls_per_turn == 7

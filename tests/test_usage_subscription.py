@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from agents.usage import Usage
 
-from strix.report.usage import LLMUsageLedger
+from nightly.report.usage import LLMUsageLedger
 
 
 def _usage() -> Usage:
@@ -19,7 +19,7 @@ def _usage() -> Usage:
 def test_zero_cost_ledger_keeps_tokens_but_reports_no_cost() -> None:
     ledger = LLMUsageLedger()
     ledger.zero_cost = True
-    ledger.record(agent_id="a", usage=_usage(), agent_name="strix", model="gpt-5.5")
+    ledger.record(agent_id="a", usage=_usage(), agent_name="nightly", model="gpt-5.5")
 
     record = ledger.to_record()
     assert record["cost"] == 0.0
@@ -40,7 +40,7 @@ def test_normal_ledger_still_estimates_cost() -> None:
     # Sanity check the flag is opt-in: without it, an OpenAI-native model still
     # accrues an estimated cost (proves zeroing is what suppresses it).
     ledger = LLMUsageLedger()
-    ledger.record(agent_id="a", usage=_usage(), agent_name="strix", model="gpt-5.5")
+    ledger.record(agent_id="a", usage=_usage(), agent_name="nightly", model="gpt-5.5")
     assert ledger.to_record()["total_tokens"] == 1200
     # Cost estimation depends on litellm's cost map; it should be >= 0 and not error.
     assert ledger.total_cost >= 0.0

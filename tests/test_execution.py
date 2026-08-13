@@ -15,15 +15,15 @@ from agents.memory import SQLiteSession
 from agents.tool_context import ToolContext
 from openai.types.responses import ResponseOutputMessage, ResponseOutputRefusal
 
-from strix.core import execution
-from strix.core.agents import AgentCoordinator
-from strix.core.execution import (
+from nightly.core import execution
+from nightly.core.agents import AgentCoordinator
+from nightly.core.execution import (
     _notify_root_on_budget_reserve,
     notify_parent_on_terminal,
 )
-from strix.core.sessions import seed_initial_input
-from strix.tools.agents_graph.tools import agent_finish, stop_agent
-from strix.tools.finish.tool import finish_scan
+from nightly.core.sessions import seed_initial_input
+from nightly.tools.agents_graph.tools import agent_finish, stop_agent
+from nightly.tools.finish.tool import finish_scan
 
 
 _NO_STREAM_EVENTS: list[Any] = []
@@ -108,7 +108,7 @@ async def _call_stop_agent(
 @pytest.mark.asyncio
 async def test_reserve_stop_notifies_root_once(monkeypatch: pytest.MonkeyPatch) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child-a", "recon", parent_id="root")
     await coordinator.register("child-b", "recon", parent_id="root")
 
@@ -133,7 +133,7 @@ async def test_reserve_stop_notifies_root_once(monkeypatch: pytest.MonkeyPatch) 
 @pytest.mark.asyncio
 async def test_concurrent_reserve_claims_yield_single_root() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     for i in range(12):
         await coordinator.register(f"child-{i}", "recon", parent_id="root")
 
@@ -146,7 +146,7 @@ async def test_concurrent_reserve_claims_yield_single_root() -> None:
 @pytest.mark.asyncio
 async def test_claim_reserve_sets_flag_and_wakes_parked_agents() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
 
     flag_before = coordinator.reserve_stopped
@@ -165,7 +165,7 @@ async def test_claim_reserve_sets_flag_and_wakes_parked_agents() -> None:
 @pytest.mark.asyncio
 async def test_finish_scan_bypasses_active_agent_guard_after_reserve() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     await coordinator.set_status("child", "running")
 
@@ -183,7 +183,7 @@ async def test_finish_scan_bypasses_active_agent_guard_after_reserve() -> None:
 @pytest.mark.asyncio
 async def test_finish_scan_gate_ignores_sub_agent_caller() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     await coordinator.set_status("child", "running")
 
@@ -213,7 +213,7 @@ async def test_reserve_stop_notify_noop_without_root(monkeypatch: pytest.MonkeyP
 @pytest.mark.asyncio
 async def test_snapshot_round_trip_preserves_stop_flags() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.trigger_budget_stop()
     await coordinator.claim_reserve_notification()
 
@@ -230,7 +230,7 @@ async def test_snapshot_round_trip_preserves_stop_flags() -> None:
 @pytest.mark.asyncio
 async def test_legacy_snapshot_without_stop_flags_defaults_to_false() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     snap = await coordinator.snapshot()
     del snap["budget_stopped"]
     del snap["reserve_stopped"]
@@ -245,7 +245,7 @@ async def test_legacy_snapshot_without_stop_flags_defaults_to_false() -> None:
 async def test_randomized_reserve_claim_race_many_interleavings() -> None:
     for seed in range(25):
         coordinator = AgentCoordinator()
-        await coordinator.register("root", "strix", parent_id=None)
+        await coordinator.register("root", "nightly", parent_id=None)
         child_ids = [f"child-{i}" for i in range(8)]
         for child_id in child_ids:
             await coordinator.register(child_id, "recon", parent_id="root")
@@ -269,7 +269,7 @@ async def test_randomized_reserve_claim_race_many_interleavings() -> None:
 async def test_reserve_claim_never_loses_root_wake() -> None:
     for _ in range(10):
         coordinator = AgentCoordinator()
-        await coordinator.register("root", "strix", parent_id=None)
+        await coordinator.register("root", "nightly", parent_id=None)
         await coordinator.register("child", "recon", parent_id="root")
 
         root_waiter = asyncio.create_task(coordinator.wait_for_message("root"))
@@ -289,7 +289,7 @@ async def test_reserve_claim_never_loses_root_wake() -> None:
 @pytest.mark.asyncio
 async def test_budget_stop_takes_precedence_over_reserve_for_all_roles() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     await coordinator.claim_reserve_notification()
     await coordinator.trigger_budget_stop()
@@ -303,7 +303,7 @@ async def test_budget_stop_takes_precedence_over_reserve_for_all_roles() -> None
 @pytest.mark.asyncio
 async def test_root_not_released_by_reserve_alone() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
 
     await coordinator.claim_reserve_notification()
@@ -320,7 +320,7 @@ async def test_root_not_released_by_reserve_alone() -> None:
 @pytest.mark.asyncio
 async def test_snapshot_during_concurrent_claims_is_consistent() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     for i in range(6):
         await coordinator.register(f"child-{i}", "recon", parent_id="root")
 
@@ -341,7 +341,7 @@ async def test_snapshot_during_concurrent_claims_is_consistent() -> None:
 @pytest.mark.asyncio
 async def test_budget_stop_sets_flag() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
 
     assert coordinator.budget_stopped is False
     await coordinator.trigger_budget_stop()
@@ -353,7 +353,7 @@ async def test_budget_stop_unblocks_parked_agent() -> None:
     # A parent parked in wait_for_message (awaiting a child) must be released so
     # it can exit, no matter where in the tree the budget limit was hit.
     coordinator = AgentCoordinator()
-    await coordinator.register("parent", "strix", parent_id=None)
+    await coordinator.register("parent", "nightly", parent_id=None)
 
     waiter = asyncio.create_task(coordinator.wait_for_message("parent"))
     await asyncio.sleep(0)  # let the waiter park
@@ -376,7 +376,7 @@ async def test_wait_for_message_returns_immediately_after_budget_stop() -> None:
 @pytest.mark.asyncio
 async def test_pause_for_budget_sets_flag_and_status() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
 
     await coordinator.pause_for_budget("root")
     assert coordinator.budget_paused is True
@@ -388,7 +388,7 @@ async def test_resume_from_budget_pause_extends_and_nudges(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child-a", "recon", parent_id="root")
     await coordinator.register("child-b", "recon", parent_id="root")
     await coordinator.pause_for_budget("root")
@@ -421,7 +421,7 @@ async def test_resume_from_budget_pause_extends_and_nudges(
 @pytest.mark.asyncio
 async def test_user_send_resumes_budget_pause(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
     await coordinator.pause_for_budget("root")
@@ -442,7 +442,7 @@ async def test_user_send_resumes_budget_pause(tmp_path: Any) -> None:
 @pytest.mark.asyncio
 async def test_non_user_send_does_not_resume_budget_pause(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
     await coordinator.pause_for_budget("root")
@@ -461,7 +461,7 @@ async def test_non_user_send_does_not_resume_budget_pause(tmp_path: Any) -> None
 @pytest.mark.asyncio
 async def test_reset_budget_stops_clears_pause_and_normalizes_statuses() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.trigger_budget_stop()
     await coordinator.claim_reserve_notification()
     await coordinator.pause_for_budget("root")
@@ -477,7 +477,7 @@ async def test_reset_budget_stops_clears_pause_and_normalizes_statuses() -> None
 @pytest.mark.asyncio
 async def test_reset_budget_stops_can_preserve_pause() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.pause_for_budget("root")
 
     await coordinator.reset_budget_stops(
@@ -491,7 +491,7 @@ async def test_reset_budget_stops_can_preserve_pause() -> None:
 @pytest.mark.asyncio
 async def test_snapshot_round_trip_preserves_budget_pause() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.pause_for_budget("root")
 
     snap = await coordinator.snapshot()
@@ -510,7 +510,7 @@ async def test_terminal_child_wakes_parked_parent(tmp_path: Any, status: str) ->
     # plain "completed" - must wake the parent parked in wait_for_agents, so the root
     # can finalize the scan instead of hanging for a report that never arrives.
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "SQL Injection", parent_id="root")
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
@@ -532,7 +532,7 @@ async def test_agent_finish_without_report_still_wakes_parent(tmp_path: Any) -> 
     # Regression for #947: a child that completes with report_to_parent=False owes its
     # parent a terminal notice, otherwise the parent waits out its full timeout.
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
@@ -551,7 +551,7 @@ async def test_agent_finish_without_report_still_wakes_parent(tmp_path: Any) -> 
 @pytest.mark.asyncio
 async def test_agent_finish_report_suppresses_the_terminal_notice(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
@@ -567,7 +567,7 @@ async def test_agent_finish_report_suppresses_the_terminal_notice(tmp_path: Any)
 @pytest.mark.asyncio
 async def test_stop_agent_notifies_a_parent_that_is_not_the_stopper(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     await coordinator.register("grandchild", "sqli", parent_id="child")
     session = SQLiteSession("child", tmp_path / "agents.db")
@@ -585,7 +585,7 @@ async def test_stop_agent_notifies_a_parent_that_is_not_the_stopper(tmp_path: An
 @pytest.mark.asyncio
 async def test_stop_agent_does_not_notify_the_stopping_parent(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
@@ -599,7 +599,7 @@ async def test_stop_agent_does_not_notify_the_stopping_parent(tmp_path: Any) -> 
 @pytest.mark.asyncio
 async def test_notify_parent_on_terminal_ignores_non_terminal_status(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
@@ -623,7 +623,7 @@ class _RecordingStream:
 @pytest.mark.asyncio
 async def test_terminal_notice_does_not_cancel_parent_stream(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     session = SQLiteSession("root", tmp_path / "agents.db")
     stream = _RecordingStream()
@@ -640,7 +640,7 @@ async def test_terminal_notice_does_not_cancel_parent_stream(tmp_path: Any) -> N
 @pytest.mark.asyncio
 async def test_send_queues_without_session_and_drains_on_consume(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
 
     assert await coordinator.send("root", {"from": "user", "content": "hello"}) is True
     assert coordinator.pending_counts["root"] == 1
@@ -660,7 +660,7 @@ async def test_send_queues_without_session_and_drains_on_consume(tmp_path: Any) 
 @pytest.mark.asyncio
 async def test_error_parked_agent_only_released_by_user_message(tmp_path: Any) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     session = SQLiteSession("child", tmp_path / "agents.db")
     await coordinator.attach_runtime("child", session=session)
@@ -692,7 +692,7 @@ async def test_wait_for_message_timeout_returns_false() -> None:
 @pytest.mark.asyncio
 async def test_snapshot_round_trip_preserves_mailboxes() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.send("root", {"from": "user", "content": "queued"})
 
     snap = await coordinator.snapshot()
@@ -713,7 +713,7 @@ async def test_run_cycle_parked_parks_instead_of_raising(
     monkeypatch.setattr(execution, "_run_cycle", _boom)
 
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
 
     result = await execution._run_cycle_parked(
         object(),
@@ -794,10 +794,10 @@ async def test_structured_provider_refusal_fails_interactive_agent(
     refusal = "This request was blocked under the provider's usage policy."
     stream = _StructuredRefusalStream(refusal)
     monkeypatch.setattr(
-        "strix.core.execution.Runner.run_streamed", lambda *_args, **_kwargs: stream
+        "nightly.core.execution.Runner.run_streamed", lambda *_args, **_kwargs: stream
     )
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
 
     result = await execution._run_cycle(
         MagicMock(),
@@ -826,10 +826,10 @@ async def test_structured_provider_refusal_fails_noninteractive_child(
     refusal = "This request was blocked under the provider's usage policy."
     stream = _StructuredRefusalStream(refusal)
     monkeypatch.setattr(
-        "strix.core.execution.Runner.run_streamed", lambda *_args, **_kwargs: stream
+        "nightly.core.execution.Runner.run_streamed", lambda *_args, **_kwargs: stream
     )
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     session = SQLiteSession("root", tmp_path / "agents.db")
     await coordinator.attach_runtime("root", session=session)
@@ -864,9 +864,9 @@ async def test_crashing_noninteractive_child_settles_and_wakes_its_parent(
     def _boom(*_args: Any, **_kwargs: Any) -> Any:
         raise RuntimeError("sandbox died mid-turn")
 
-    monkeypatch.setattr("strix.core.execution.Runner.run_streamed", _boom)
+    monkeypatch.setattr("nightly.core.execution.Runner.run_streamed", _boom)
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
 
     with pytest.raises(RuntimeError, match="sandbox died mid-turn"):
@@ -973,7 +973,7 @@ async def test_interactive_text_only_turn_is_nudged_instead_of_parking(
 ) -> None:
     """A no-tool-call turn must not silently hand control back to the user."""
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     calls: list[Any] = []
     monkeypatch.setattr(
         execution,
@@ -997,7 +997,7 @@ async def test_interactive_explicit_park_gets_no_nudge(
 ) -> None:
     """``waiting`` is only reachable via respond_to_user / wait_for_agents."""
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     calls: list[Any] = []
     monkeypatch.setattr(
         execution,
@@ -1017,7 +1017,7 @@ async def test_interactive_recovery_exhaustion_parks_instead_of_crashing(
 ) -> None:
     """A human can resume an interactive scan, so exhaustion parks rather than dies."""
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     calls: list[Any] = []
     monkeypatch.setattr(
         execution,
@@ -1042,7 +1042,7 @@ async def test_interactive_subagent_exhaustion_tells_its_parent(
     report the child can no longer send.
     """
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
     calls: list[Any] = []
     monkeypatch.setattr(
@@ -1067,7 +1067,7 @@ async def test_interactive_root_exhaustion_notifies_nobody(
 ) -> None:
     """The root has no parent to report to, so parking stays silent."""
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     monkeypatch.setattr(
         execution,
         "_run_cycle_parked",
@@ -1086,7 +1086,7 @@ async def test_noninteractive_recovery_exhaustion_crashes(
 ) -> None:
     """No user is present to resume an autonomous run, so it still fails loudly."""
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     calls: list[Any] = []
     monkeypatch.setattr(
         execution,
@@ -1128,7 +1128,7 @@ async def test_recovery_count_survives_a_snapshot_round_trip(
 ) -> None:
     """A resumed agent must not earn a fresh nudge budget and loop forever."""
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     calls: list[Any] = []
     monkeypatch.setattr(
         execution,
@@ -1162,7 +1162,7 @@ async def test_recovery_count_is_cleared_by_a_lifecycle_tool(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     calls: list[Any] = []
     monkeypatch.setattr(
         execution,
@@ -1179,7 +1179,7 @@ async def test_recovery_count_is_cleared_by_a_lifecycle_tool(
 async def test_agent_awaiting_a_human_is_never_auto_resumed() -> None:
     """The user can message any agent, so parking for one is not root-only."""
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child", "recon", parent_id="root")
 
     for agent_id in ("root", "child"):
@@ -1190,7 +1190,7 @@ async def test_agent_awaiting_a_human_is_never_auto_resumed() -> None:
 @pytest.mark.asyncio
 async def test_agent_awaiting_other_agents_is_re_checked_on_a_timer() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.park_waiting("root", wait_kind="agents")
 
     timeout = await execution._plain_waiting_timeout(coordinator, "root")
@@ -1218,7 +1218,7 @@ async def test_idle_auto_resumes_stop_after_their_budget() -> None:
 @pytest.mark.asyncio
 async def test_wait_kind_survives_a_snapshot_round_trip() -> None:
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.park_waiting("root", wait_kind="user")
     await coordinator.record_idle_resume("root")
 

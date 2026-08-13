@@ -1,7 +1,7 @@
-"""Tests for root scan prompt options in run_strix_scan.
+"""Tests for root scan prompt options in run_nightly_scan.
 
 Verify that ``root_instructions_override`` and ``extra_system_prompt_context``
-flow through to the root agent's ``build_strix_agent`` call.
+flow through to the root agent's ``build_nightly_agent`` call.
 """
 
 from __future__ import annotations
@@ -14,11 +14,11 @@ import pytest
 from agents import ModelSettings
 from openai import RateLimitError
 
-import strix.tools.notes.tools as notes_tools
-import strix.tools.todo.tools as todo_tools
-from strix.core import runner
-from strix.core.agents import AgentCoordinator
-from strix.runtime import session_manager
+import nightly.tools.notes.tools as notes_tools
+import nightly.tools.todo.tools as todo_tools
+from nightly.core import runner
+from nightly.core.agents import AgentCoordinator
+from nightly.runtime import session_manager
 
 
 def _make_rate_limit_error() -> RateLimitError:
@@ -32,10 +32,10 @@ def _patch_engine_scaffold(
     tmp_path: Any,
     scope_context: dict[str, Any],
 ) -> dict[str, Any]:
-    """Stub out everything around build_strix_agent and stop at run_agent_loop.
+    """Stub out everything around build_nightly_agent and stop at run_agent_loop.
 
     Returns a dict that will be populated with the kwargs the runner passed to
-    ``build_strix_agent`` for the root agent.
+    ``build_nightly_agent`` for the root agent.
     """
     monkeypatch.setattr(runner, "run_dir_for", lambda _scan_id: tmp_path)
     monkeypatch.setattr(runner, "runtime_state_dir", lambda _run_dir: tmp_path)
@@ -79,12 +79,12 @@ def _patch_engine_scaffold(
 
     captured: dict[str, Any] = {}
 
-    def _build_strix_agent(**kwargs: Any) -> object:
+    def _build_nightly_agent(**kwargs: Any) -> object:
         if kwargs.get("is_root") and "kwargs" not in captured:
             captured["kwargs"] = kwargs
         return object()
 
-    monkeypatch.setattr(runner, "build_strix_agent", _build_strix_agent)
+    monkeypatch.setattr(runner, "build_nightly_agent", _build_nightly_agent)
     monkeypatch.setattr(runner, "make_child_factory", lambda **_kwargs: lambda **_k: object())
     monkeypatch.setattr(runner, "open_agent_session", lambda _root_id, _db: object())
 
@@ -103,7 +103,7 @@ async def test_root_prompt_options_flow_into_root_agent(
 ) -> None:
     scope_context = {
         "scope_source": "system_scan_config",
-        "authorization_source": "strix_platform_verified_targets",
+        "authorization_source": "nightly_platform_verified_targets",
         "authorized_targets": [
             {
                 "type": "web_application",
@@ -115,7 +115,7 @@ async def test_root_prompt_options_flow_into_root_agent(
     }
     captured = _patch_engine_scaffold(monkeypatch, tmp_path, scope_context)
 
-    await runner.run_strix_scan(
+    await runner.run_nightly_scan(
         scan_config={"targets": [], "scan_mode": "deep"},
         scan_id="scan-ext",
         image="img",
@@ -148,7 +148,7 @@ async def test_extra_system_prompt_context_cannot_override_scope_context(
     captured = _patch_engine_scaffold(monkeypatch, tmp_path, scope_context)
 
     with pytest.raises(ValueError, match="authorized_targets"):
-        await runner.run_strix_scan(
+        await runner.run_nightly_scan(
             scan_config={"targets": [], "scan_mode": "deep"},
             scan_id="scan-conflict",
             image="img",
@@ -168,7 +168,7 @@ async def test_root_prompt_options_default_to_none(
     scope_context = {"scope": "built-in"}
     captured = _patch_engine_scaffold(monkeypatch, tmp_path, scope_context)
 
-    await runner.run_strix_scan(
+    await runner.run_nightly_scan(
         scan_config={"targets": [], "scan_mode": "deep"},
         scan_id="scan-default",
         image="img",
@@ -188,7 +188,7 @@ async def test_unknown_tool_calls_are_returned_to_the_model(
     """A hallucinated tool name must not end the scan."""
     captured = _patch_engine_scaffold(monkeypatch, tmp_path, {})
 
-    await runner.run_strix_scan(
+    await runner.run_nightly_scan(
         scan_config={"targets": [], "scan_mode": "deep"},
         scan_id="scan-unknown-tool",
         image="img",

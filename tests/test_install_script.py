@@ -24,9 +24,9 @@ def _write_executable(path: Path, content: str) -> None:
 
 
 def _create_release_archive(tmp_path: Path) -> Path:
-    binary_name = f"strix-{RELEASE_VERSION}-{RELEASE_TARGET}"
+    binary_name = f"nightly-{RELEASE_VERSION}-{RELEASE_TARGET}"
     binary_path = tmp_path / binary_name
-    _write_executable(binary_path, f"#!/bin/sh\nprintf 'strix {RELEASE_VERSION}\\n'\n")
+    _write_executable(binary_path, f"#!/bin/sh\nprintf 'nightly {RELEASE_VERSION}\\n'\n")
 
     archive_path = tmp_path / f"{binary_name}.tar.gz"
     with tarfile.open(archive_path, "w:gz") as archive:
@@ -58,10 +58,10 @@ while [ "$#" -gt 0 ]; do
     shift 2
     continue
   fi
-  printf '%s\\n' "$1" >> "$STRIX_TEST_CURL_LOG"
+  printf '%s\\n' "$1" >> "$NIGHTLY_TEST_CURL_LOG"
   shift
 done
-cp "$STRIX_TEST_ARCHIVE" "$output"
+cp "$NIGHTLY_TEST_ARCHIVE" "$output"
 """,
     )
     return mock_bin
@@ -89,8 +89,8 @@ def _create_installer_environment(
         "PATH": f"{mock_bin}:/usr/bin:/bin",
         "SHELL": "/bin/bash",
         "TMPDIR": str(download_path),
-        "STRIX_TEST_ARCHIVE": str(archive_path),
-        "STRIX_TEST_CURL_LOG": str(curl_log_path),
+        "NIGHTLY_TEST_ARCHIVE": str(archive_path),
+        "NIGHTLY_TEST_CURL_LOG": str(curl_log_path),
         "VERSION": RELEASE_VERSION,
     }
     return environment, home_path, curl_log_path
@@ -123,17 +123,17 @@ def test_installer_downloads_and_runs_linux_arm64_release(tmp_path: Path) -> Non
     result = _run_installer(repository_root, environment)
 
     assert result.returncode == 0, result.stderr
-    expected_filename = f"strix-{RELEASE_VERSION}-{RELEASE_TARGET}.tar.gz"
+    expected_filename = f"nightly-{RELEASE_VERSION}-{RELEASE_TARGET}.tar.gz"
     assert expected_filename in curl_log_path.read_text(encoding="utf-8")
 
-    installed_binary = home_path / ".strix/bin/strix"
+    installed_binary = home_path / ".nightly/bin/nightly"
     installed_result = subprocess.run(  # noqa: S603
         [str(installed_binary), "--version"],
         capture_output=True,
         text=True,
         check=True,
     )
-    assert installed_result.stdout.strip() == f"strix {RELEASE_VERSION}"
+    assert installed_result.stdout.strip() == f"nightly {RELEASE_VERSION}"
 
 
 def test_installer_rejects_unsupported_architecture(tmp_path: Path) -> None:
@@ -151,4 +151,4 @@ def test_installer_rejects_unsupported_architecture(tmp_path: Path) -> None:
     assert result.returncode != 0
     assert "Unsupported OS/Arch: linux/riscv64" in result.stdout
     assert not curl_log_path.exists()
-    assert not (home_path / ".strix").exists()
+    assert not (home_path / ".nightly").exists()

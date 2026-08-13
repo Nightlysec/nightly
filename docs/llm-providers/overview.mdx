@@ -1,9 +1,9 @@
 ---
 title: "Overview"
-description: "Configure your AI model for Strix"
+description: "Configure your AI model for Nightly"
 ---
 
-Strix uses [LiteLLM](https://docs.litellm.ai/docs/providers) for model compatibility, supporting 100+ LLM providers.
+Nightly uses [LiteLLM](https://docs.litellm.ai/docs/providers) for model compatibility, supporting 100+ LLM providers.
 
 ## Configuration
 
@@ -16,7 +16,7 @@ Set your model and API key:
 | Gemini 3 Pro      | Google Vertex | `vertex_ai/gemini-3-pro-preview` |
 
 ```bash
-export STRIX_LLM="openai/gpt-5.4"
+export NIGHTLY_LLM="openai/gpt-5.4"
 export LLM_API_KEY="your-api-key"
 ```
 
@@ -25,7 +25,7 @@ export LLM_API_KEY="your-api-key"
 Run models locally with [Ollama](https://ollama.com), [LM Studio](https://lmstudio.ai), or any OpenAI-compatible server:
 
 ```bash
-export STRIX_LLM="ollama/llama4"
+export NIGHTLY_LLM="ollama/llama4"
 export LLM_API_BASE="http://localhost:11434"
 ```
 

@@ -1,6 +1,6 @@
 ---
 title: "Quick Start"
-description: "Install Strix and run your first security scan"
+description: "Install Nightly and run your first security scan"
 ---
 
 ## Prerequisites
@@ -18,7 +18,7 @@ description: "Install Strix and run your first security scan"
   </Tab>
   <Tab title="pipx">
     ```bash
-    pipx install strix-agent
+    pipx install nightly-agent
     ```
   </Tab>
 </Tabs>
@@ -28,7 +28,7 @@ description: "Install Strix and run your first security scan"
 Set your LLM provider:
 
 ```bash
-export STRIX_LLM="openai/gpt-5.4"
+export NIGHTLY_LLM="openai/gpt-5.4"
 export LLM_API_KEY="your-api-key"
 ```
 
@@ -39,32 +39,32 @@ For best results, use `openai/gpt-5.4`, `anthropic/claude-opus-4-6`, or `openai/
 ## Run Your First Scan
 
 ```bash
-strix --target ./your-app
+nightly --target ./your-app
 ```
 
 <Note>
-First run pulls the Docker sandbox image automatically. Results are saved to `strix_runs/<run-name>`.
+First run pulls the Docker sandbox image automatically. Results are saved to `nightly_runs/<run-name>`.
 </Note>
 
 ## Target Types
 
-Strix accepts multiple target types:
+Nightly accepts multiple target types:
 
 ```bash
 # Local codebase
-strix --target ./app-directory
+nightly --target ./app-directory
 
 # GitHub repository
-strix --target https://github.com/org/repo
+nightly --target https://github.com/org/repo
 
 # Live web application
-strix --target https://your-app.com
+nightly --target https://your-app.com
 
 # Multiple targets (white-box testing)
-strix -t https://github.com/org/repo -t https://your-app.com
+nightly -t https://github.com/org/repo -t https://your-app.com
 
 # Targets from a file, one target per non-empty, non-comment line
-strix --target-list ./targets.txt
+nightly --target-list ./targets.txt
 ```
 
 ## Next Steps

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from strix.tools.reporting.tool import _calculate_cvss
+from nightly.tools.reporting.tool import _calculate_cvss
 
 
 def test_cvss_without_demonstrated_impact_is_informational() -> None:

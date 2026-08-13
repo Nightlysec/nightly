@@ -1,19 +1,19 @@
 #!/bin/bash
 set -e
 
-if [ -n "${STRIX_HOST_UID:-}" ] && [ "${STRIX_HOST_UID}" != "0" ] && [ "${STRIX_HOST_UID}" != "$(id -u)" ]; then
+if [ -n "${NIGHTLY_HOST_UID:-}" ] && [ "${NIGHTLY_HOST_UID}" != "0" ] && [ "${NIGHTLY_HOST_UID}" != "$(id -u)" ]; then
   exec sudo -E -- bash -c '
     set -e
-    gid="${STRIX_HOST_GID:-$STRIX_HOST_UID}"
+    gid="${NIGHTLY_HOST_GID:-$NIGHTLY_HOST_UID}"
     old_uid="$1"
     old_gid="$2"
     export PATH="$3"
     shift 3
-    sed -i "s|^pentester:x:${old_uid}:${old_gid}:|pentester:x:${STRIX_HOST_UID}:${gid}:|" /etc/passwd
+    sed -i "s|^pentester:x:${old_uid}:${old_gid}:|pentester:x:${NIGHTLY_HOST_UID}:${gid}:|" /etc/passwd
     sed -i "s|^pentester:x:${old_gid}:|pentester:x:${gid}:|" /etc/group
-    chown -R "${STRIX_HOST_UID}:${gid}" /home/pentester /app/certs
-    chown "${STRIX_HOST_UID}:${gid}" /workspace
-    exec setpriv --reuid "${STRIX_HOST_UID}" --regid "${gid}" --init-groups "$0" "$@"
+    chown -R "${NIGHTLY_HOST_UID}:${gid}" /home/pentester /app/certs
+    chown "${NIGHTLY_HOST_UID}:${gid}" /workspace
+    exec setpriv --reuid "${NIGHTLY_HOST_UID}" --regid "${gid}" --init-groups "$0" "$@"
   ' "$0" "$(id -u)" "$(id -g)" "$PATH" "$@"
 fi
 
@@ -27,12 +27,12 @@ fi
 
 # Caido enforces a Host allowlist (DNS-rebinding protection) and rejects requests
 # whose Host header is a hostname it doesn't recognize. To reach Caido over a
-# hostname (rather than an IP literal), set STRIX_CAIDO_ALLOWED_DOMAINS to a
+# hostname (rather than an IP literal), set NIGHTLY_CAIDO_ALLOWED_DOMAINS to a
 # comma-separated list of hostnames to allow. Unset by default.
 # See https://docs.caido.io/app/guides/domain_allowlist
 CAIDO_UI_DOMAIN_ARGS=()
-if [ -n "${STRIX_CAIDO_ALLOWED_DOMAINS:-}" ]; then
-  IFS=',' read -ra _caido_domains <<< "${STRIX_CAIDO_ALLOWED_DOMAINS}"
+if [ -n "${NIGHTLY_CAIDO_ALLOWED_DOMAINS:-}" ]; then
+  IFS=',' read -ra _caido_domains <<< "${NIGHTLY_CAIDO_ALLOWED_DOMAINS}"
   for _d in "${_caido_domains[@]}"; do
     [ -n "$_d" ] && CAIDO_UI_DOMAIN_ARGS+=(--ui-domain "$_d")
   done

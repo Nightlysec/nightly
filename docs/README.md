@@ -1,6 +1,6 @@
-# Strix Documentation
+# Nightly Documentation
 
-Documentation source files for Strix, powered by [Mintlify](https://mintlify.com).
+Documentation source files for Nightly, powered by [Mintlify](https://mintlify.com).
 
 ## Local Preview
 

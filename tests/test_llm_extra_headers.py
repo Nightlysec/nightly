@@ -9,16 +9,16 @@ import litellm
 import pytest
 from agents.models import _openai_shared
 
-from strix.config import loader
-from strix.config.loader import load_settings
-from strix.config.models import configure_sdk_model_defaults
+from nightly.config import loader
+from nightly.config.loader import load_settings
+from nightly.config.models import configure_sdk_model_defaults
 
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-_ENV_KEYS = ["STRIX_LLM", "LLM_API_KEY", "LLM_API_BASE", "LLM_EXTRA_HEADERS"]
+_ENV_KEYS = ["NIGHTLY_LLM", "LLM_API_KEY", "LLM_API_BASE", "LLM_EXTRA_HEADERS"]
 
 
 @pytest.fixture(autouse=True)
@@ -45,7 +45,7 @@ def test_extra_headers_parsed_from_json_env(monkeypatch: pytest.MonkeyPatch) -> 
 
 
 def test_extra_headers_merged_into_litellm_headers(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("STRIX_LLM", "litellm/openai/some-model")
+    monkeypatch.setenv("NIGHTLY_LLM", "litellm/openai/some-model")
     monkeypatch.setenv("LLM_API_BASE", "https://gateway.example/v1")
     monkeypatch.setenv("LLM_API_KEY", "token")
     headers = {"X-Feature-Key": "svc", "X-Tenant": "acme"}
@@ -60,7 +60,7 @@ def test_extra_headers_merged_into_litellm_headers(monkeypatch: pytest.MonkeyPat
 
 
 def test_extra_headers_applied_to_native_openai_client(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("STRIX_LLM", "openai/some-model")
+    monkeypatch.setenv("NIGHTLY_LLM", "openai/some-model")
     monkeypatch.setenv("LLM_API_BASE", "https://gateway.example/v1")
     monkeypatch.setenv("LLM_API_KEY", "token")
     monkeypatch.setenv("LLM_EXTRA_HEADERS", json.dumps({"X-Feature-Key": "svc"}))
@@ -76,7 +76,7 @@ def test_extra_headers_applied_to_native_openai_client(monkeypatch: pytest.Monke
 def test_extra_headers_applied_to_native_openai_without_custom_base(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("STRIX_LLM", "openai/gpt-5")
+    monkeypatch.setenv("NIGHTLY_LLM", "openai/gpt-5")
     monkeypatch.setenv("LLM_API_KEY", "token")
     monkeypatch.setenv("LLM_EXTRA_HEADERS", json.dumps({"X-Feature-Key": "svc"}))
 
@@ -88,7 +88,7 @@ def test_extra_headers_applied_to_native_openai_without_custom_base(
 
 
 def test_no_extra_headers_leaves_litellm_headers_untouched(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("STRIX_LLM", "openai/some-model")
+    monkeypatch.setenv("NIGHTLY_LLM", "openai/some-model")
     monkeypatch.setenv("LLM_API_BASE", "https://gateway.example/v1")
     monkeypatch.setenv("LLM_API_KEY", "token")
 

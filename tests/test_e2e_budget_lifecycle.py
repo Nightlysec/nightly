@@ -6,11 +6,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from strix.core import execution
-from strix.core.agents import AgentCoordinator, WaitKind
-from strix.core.execution import _start_child_runner, run_agent_loop
-from strix.core.hooks import BudgetExceededError, ReportUsageHooks
-from strix.core.sessions import open_agent_session
+from nightly.core import execution
+from nightly.core.agents import AgentCoordinator, WaitKind
+from nightly.core.execution import _start_child_runner, run_agent_loop
+from nightly.core.hooks import BudgetExceededError, ReportUsageHooks
+from nightly.core.sessions import open_agent_session
 
 
 if TYPE_CHECKING:
@@ -126,7 +126,7 @@ async def test_full_budget_lifecycle_reserve_then_cap(  # noqa: PLR0915
     sessions: list[Any] = []
     run_config = MagicMock()
 
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     root_session = open_agent_session("root", db_path)
     sessions.append(root_session)
 
@@ -151,7 +151,7 @@ async def test_full_budget_lifecycle_reserve_then_cap(  # noqa: PLR0915
             root_exc.append(exc)
             raise
 
-    with patch("strix.core.hooks.get_global_report_state", return_value=ledger):
+    with patch("nightly.core.hooks.get_global_report_state", return_value=ledger):
         root_task = asyncio.create_task(_root_loop())
         await asyncio.sleep(0.05)
 
@@ -236,7 +236,7 @@ async def test_respawned_children_after_reserve_never_spend(
     monkeypatch.setattr(execution, "_compact_session", _noop_compact)
 
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.register("child-a", "recon", parent_id="root")
     snap = await coordinator.snapshot()
     snap["reserve_stopped"] = True
@@ -247,7 +247,7 @@ async def test_respawned_children_after_reserve_never_spend(
     monkeypatch.setattr(execution, "Runner", _fake_runner(ledger, restored))
 
     sessions: list[Any] = []
-    with patch("strix.core.hooks.get_global_report_state", return_value=ledger):
+    with patch("nightly.core.hooks.get_global_report_state", return_value=ledger):
         await _start_child_runner(
             parent_ctx={"agent_id": "root", "parent_id": None},
             coordinator=restored,
@@ -282,7 +282,7 @@ async def test_resumed_parked_root_after_reserve_is_renotified_and_finalizes(
     monkeypatch.setattr(execution, "_compact_session", _noop_compact)
 
     coordinator = AgentCoordinator()
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     await coordinator.set_status("root", "waiting")
     snap = await coordinator.snapshot()
     snap["reserve_stopped"] = True
@@ -293,7 +293,7 @@ async def test_resumed_parked_root_after_reserve_is_renotified_and_finalizes(
     monkeypatch.setattr(execution, "Runner", _fake_runner(ledger, restored))
 
     root_session = open_agent_session("root", tmp_path / "agents.sqlite")
-    with patch("strix.core.hooks.get_global_report_state", return_value=ledger):
+    with patch("nightly.core.hooks.get_global_report_state", return_value=ledger):
         root_task = asyncio.create_task(
             run_agent_loop(
                 agent=MagicMock(),
@@ -332,10 +332,10 @@ async def test_interactive_budget_pause_then_user_message_extends_and_resumes(
     monkeypatch.setattr(execution, "_compact_session", _noop_compact)
 
     coordinator.set_budget_extender(hooks.extend_budget)
-    await coordinator.register("root", "strix", parent_id=None)
+    await coordinator.register("root", "nightly", parent_id=None)
     root_session = open_agent_session("root", tmp_path / "agents.sqlite")
 
-    with patch("strix.core.hooks.get_global_report_state", return_value=ledger):
+    with patch("nightly.core.hooks.get_global_report_state", return_value=ledger):
         root_task = asyncio.create_task(
             run_agent_loop(
                 agent=MagicMock(),

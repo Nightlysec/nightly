@@ -1,12 +1,12 @@
 ---
 title: "CLI Reference"
-description: "Command-line options for Strix"
+description: "Command-line options for Nightly"
 ---
 
 ## Basic Usage
 
 ```bash
-strix (--target <target> | --target-list <path>) [options]
+nightly (--target <target> | --target-list <path>) [options]
 ```
 
 ## Options
@@ -14,7 +14,7 @@ strix (--target <target> | --target-list <path>) [options]
 <ParamField path="--target, -t" type="string">
   Target to test. Accepts URLs, repositories, local directories, domains, IP addresses, API spec files (OpenAPI/Swagger `.json`/`.yaml`, a Postman collection export), or a live Postman collection by id (`postman://<collection-uuid>`). Can be specified multiple times. Fresh runs require at least one target source: `--target` or `--target-list`.
 
-  When the target is an API spec, Strix copies it into the agent's workspace and authorizes the base URLs it declares (including those resolved from a Postman environment) as in-scope hosts - so the agent reads the contract and tests the full declared surface instead of discovering endpoints by crawling. Pair the spec with the deployed base URL (e.g. `--target ./openapi.yaml --target https://api.example.com`) so the agent has a reachable host to attack.
+  When the target is an API spec, Nightly copies it into the agent's workspace and authorizes the base URLs it declares (including those resolved from a Postman environment) as in-scope hosts - so the agent reads the contract and tests the full declared surface instead of discovering endpoints by crawling. Pair the spec with the deployed base URL (e.g. `--target ./openapi.yaml --target https://api.example.com`) so the agent has a reachable host to attack.
 
   <Note>
     A local directory is mounted into the sandbox live and **writable**, so the agent edits your real files (`.git` excepted). Commit or stash first.
@@ -54,7 +54,7 @@ strix (--target <target> | --target-list <path>) [options]
 </ParamField>
 
 <ParamField path="--config" type="string">
-  Path to a custom config file (JSON) to use instead of `~/.strix/cli-config.json`.
+  Path to a custom config file (JSON) to use instead of `~/.nightly/cli-config.json`.
 </ParamField>
 
 <ParamField path="--max-budget" type="number">
@@ -90,7 +90,7 @@ strix (--target <target> | --target-list <path>) [options]
     concurrently).
   - Cost is a best-effort estimate derived from token usage and model pricing;
     providers that do not expose priced usage may under-count.
-  - For LiteLLM-routed models, Strix enables streaming success callbacks to
+  - For LiteLLM-routed models, Nightly enables streaming success callbacks to
     capture provider-reported cost. Message content remains excluded, but
     third-party LiteLLM callbacks configured in the same process can receive
     other streaming metadata such as model names, request IDs, and token
@@ -114,34 +114,34 @@ strix (--target <target> | --target-list <path>) [options]
 
 ```bash
 # Basic scan
-strix --target https://example.com
+nightly --target https://example.com
 
 # Authenticated testing
-strix --target https://app.com --instruction "Use credentials: user:pass"
+nightly --target https://app.com --instruction "Use credentials: user:pass"
 
 # Focused testing
-strix --target api.example.com --instruction "Focus on IDOR and auth bypass"
+nightly --target api.example.com --instruction "Focus on IDOR and auth bypass"
 
 # CI/CD mode
-strix -n --target ./ --scan-mode quick
+nightly -n --target ./ --scan-mode quick
 
 # Cap cost and per-agent turns
-strix --target https://example.com --max-budget 25 --max-turns 300
+nightly --target https://example.com --max-budget 25 --max-turns 300
 
 # Force diff-scope against a specific base ref
-strix -n --target ./ --scan-mode quick --scope-mode diff --diff-base origin/main
+nightly -n --target ./ --scan-mode quick --scope-mode diff --diff-base origin/main
 
 # Multi-target white-box testing
-strix -t https://github.com/org/app -t https://staging.example.com
+nightly -t https://github.com/org/app -t https://staging.example.com
 
 # API spec + live target (OpenAPI/Swagger file or Postman collection)
-strix -t ./openapi.yaml -t https://api.example.com
+nightly -t ./openapi.yaml -t https://api.example.com
 
 # Postman collection pulled live by id (+ optional environment)
-strix -t "postman://<collection-uuid>?env=<environment-uuid>"
+nightly -t "postman://<collection-uuid>?env=<environment-uuid>"
 
 # Targets from a file
-strix --target-list ./targets.txt
+nightly --target-list ./targets.txt
 ```
 
 ## Exit Codes

@@ -7,9 +7,9 @@ from pathlib import Path
 
 import pytest
 
-from strix.config import apply_config_override, loader
-from strix.config.settings import DEFAULT_MAX_TURNS
-from strix.interface.tui.backend.controller import TuiController
+from nightly.config import apply_config_override, loader
+from nightly.config.settings import DEFAULT_MAX_TURNS
+from nightly.interface.tui.backend.controller import TuiController
 
 
 def args() -> argparse.Namespace:
@@ -32,7 +32,7 @@ def args() -> argparse.Namespace:
 @pytest.fixture(autouse=True)
 def isolated_config(tmp_path: Path) -> None:
     for key in (
-        "STRIX_LLM",
+        "NIGHTLY_LLM",
         "OPENAI_API_KEY",
         "ANTHROPIC_API_KEY",
         "LLM_API_KEY",
@@ -101,7 +101,7 @@ async def test_large_target_list_reports_truncated_snapshot_count() -> None:
 
 
 def test_state_populates_model_warning_for_non_frontier_model() -> None:
-    os.environ["STRIX_LLM"] = "openai/gpt-3.5-turbo"
+    os.environ["NIGHTLY_LLM"] = "openai/gpt-3.5-turbo"
     loader._cached = None
 
     warning = TuiController(args()).snapshot()["model_warning"]
@@ -145,7 +145,7 @@ async def test_start_launches_with_a_configured_model() -> None:
         nonlocal started
         started = True
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
     await controller.handle("setup.add_target", {"target": "https://example.com"})
@@ -164,7 +164,7 @@ async def test_start_without_target_requires_mount_consent() -> None:
         nonlocal started
         started = True
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     os.environ["ANTHROPIC_API_KEY"] = "test-key"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
@@ -186,7 +186,7 @@ async def test_target_less_start_enters_live_view_and_waits_for_the_mount() -> N
         nonlocal started
         started = True
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     os.environ["ANTHROPIC_API_KEY"] = "test-key"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
@@ -214,7 +214,7 @@ async def test_confirming_the_mount_starts_the_scan_without_a_target() -> None:
         started = True
         seen_verify = verify
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     os.environ["ANTHROPIC_API_KEY"] = "test-key"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
@@ -240,7 +240,7 @@ async def test_declining_the_mount_runs_without_one() -> None:
     async def start(verify: bool = True) -> None:
         started.append(verify)
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     os.environ["ANTHROPIC_API_KEY"] = "test-key"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
@@ -265,7 +265,7 @@ async def test_approving_the_mount_runs_with_it() -> None:
     async def start(verify: bool = True) -> None:
         started.append(verify)
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     os.environ["ANTHROPIC_API_KEY"] = "test-key"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
@@ -302,7 +302,7 @@ async def test_start_forwards_verify_flag_by_default() -> None:
         nonlocal seen_verify
         seen_verify = verify
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     os.environ["ANTHROPIC_API_KEY"] = "test-key"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
@@ -323,7 +323,7 @@ async def test_start_rejects_concurrent_and_repeated_submissions() -> None:
         entered.set()
         await release.wait()
 
-    os.environ["STRIX_LLM"] = "anthropic/claude-sonnet-4"
+    os.environ["NIGHTLY_LLM"] = "anthropic/claude-sonnet-4"
     os.environ["ANTHROPIC_API_KEY"] = "test-key"
     loader._cached = None
     controller = TuiController(args(), on_start=start)
@@ -438,7 +438,7 @@ async def test_existing_viewer_is_reopened_and_closed(
     controller.viewer_url = "http://127.0.0.1:1234/?token=test"
     server = ViewerServer()
     controller._viewer_httpd = server
-    monkeypatch.setattr("strix.interface.tui.backend.controller.webbrowser.open", opened.append)
+    monkeypatch.setattr("nightly.interface.tui.backend.controller.webbrowser.open", opened.append)
 
     result = await controller.handle("viewer.open", {})
     controller.close_viewer()

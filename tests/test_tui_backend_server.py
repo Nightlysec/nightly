@@ -11,18 +11,18 @@ from typing import Any, cast
 import pytest
 from agents.tool import ToolOutputImage
 
-from strix.config.settings import DEFAULT_MAX_TURNS
-from strix.interface.tui.backend.controller import TuiController
-from strix.interface.tui.backend.projection import terminal_projection
-from strix.interface.tui.backend.protocol import (
+from nightly.config.settings import DEFAULT_MAX_TURNS
+from nightly.interface.tui.backend.controller import TuiController
+from nightly.interface.tui.backend.projection import terminal_projection
+from nightly.interface.tui.backend.protocol import (
     MAX_COMMAND_BYTES,
     PROTOCOL_CAPABILITIES,
     PROTOCOL_VERSION,
     ProtocolHandshakeError,
     envelope,
 )
-from strix.interface.tui.backend.server import TuiBackendServer
-from strix.interface.tui.live_view import TuiLiveView
+from nightly.interface.tui.backend.server import TuiBackendServer
+from nightly.interface.tui.live_view import TuiLiveView
 
 
 def args() -> argparse.Namespace:

@@ -1,6 +1,6 @@
 ---
 title: "Contributing"
-description: "Contribute to Strix development"
+description: "Contribute to Nightly development"
 ---
 
 ## Development Setup
@@ -18,8 +18,8 @@ description: "Contribute to Strix development"
 <Steps>
   <Step title="Clone the repository">
     ```bash
-    git clone https://github.com/usestrix/strix.git
-    cd strix
+    git clone https://github.com/usenightly/nightly.git
+    cd nightly
     ```
   </Step>
   <Step title="Install dependencies">
@@ -33,20 +33,20 @@ description: "Contribute to Strix development"
   </Step>
   <Step title="Configure LLM">
     ```bash
-    export STRIX_LLM="openai/gpt-5.4"
+    export NIGHTLY_LLM="openai/gpt-5.4"
     export LLM_API_KEY="your-api-key"
     ```
   </Step>
-  <Step title="Run Strix">
+  <Step title="Run Nightly">
     ```bash
-    uv run strix --target https://example.com
+    uv run nightly --target https://example.com
     ```
   </Step>
 </Steps>
 
 ## Contributing Skills
 
-Skills are specialized knowledge packages that enhance agent capabilities. They live in `strix/skills/`
+Skills are specialized knowledge packages that enhance agent capabilities. They live in `nightly/skills/`
 
 ### Creating a Skill
 
@@ -87,8 +87,8 @@ make wheel
 ```
 
 The build hook (`scripts/tui_sidecar_hook.py`) requires Go 1.24.x or newer, embeds
-the sidecar as `strix/bin/strix-tui`, and assigns the current platform tag.
-Frozen releases built by `scripts/build.sh` and `strix.spec` also require the
+the sidecar as `nightly/bin/nightly-tui`, and assigns the current platform tag.
+Frozen releases built by `scripts/build.sh` and `nightly.spec` also require the
 sidecar.
 
 ## Reporting Issues
@@ -96,7 +96,7 @@ sidecar.
 Include:
 
 - Python version and OS
-- Strix version (`strix --version`)
+- Nightly version (`nightly --version`)
 - LLM being used
 - Full error traceback
 - Steps to reproduce
@@ -107,7 +107,7 @@ Include:
   <Card title="Discord" icon="discord" href="https://discord.gg/strix-ai">
     Join the community for help and discussion.
   </Card>
-  <Card title="GitHub Issues" icon="github" href="https://github.com/usestrix/strix/issues">
+  <Card title="GitHub Issues" icon="github" href="https://github.com/usenightly/nightly/issues">
     Report bugs and request features.
   </Card>
 </CardGroup>

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-cli_main: Any = importlib.import_module("strix.interface.main")
+cli_main: Any = importlib.import_module("nightly.interface.main")
 
 
 def _stub_settings(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -35,7 +35,7 @@ def test_parse_arguments_accepts_target_list_file(
         encoding="utf-8",
     )
     _stub_settings(monkeypatch)
-    monkeypatch.setattr(sys, "argv", ["strix", "--target-list", str(target_list), "-n"])
+    monkeypatch.setattr(sys, "argv", ["nightly", "--target-list", str(target_list), "-n"])
 
     args = cli_main.parse_arguments()
 
@@ -58,7 +58,7 @@ def test_parse_arguments_combines_target_and_target_list(
     monkeypatch.setattr(
         sys,
         "argv",
-        ["strix", "-t", "https://test1.com/", "--target-list", str(target_list)],
+        ["nightly", "-t", "https://test1.com/", "--target-list", str(target_list)],
     )
 
     args = cli_main.parse_arguments()
@@ -77,7 +77,7 @@ def test_parse_arguments_rejects_resume_with_target_list(
     monkeypatch.setattr(
         sys,
         "argv",
-        ["strix", "--resume", "old-run", "--target-list", str(target_list)],
+        ["nightly", "--resume", "old-run", "--target-list", str(target_list)],
     )
 
     with pytest.raises(SystemExit):
@@ -104,7 +104,7 @@ def test_resume_restores_a_target_less_workspace_mount(
     work.mkdir()
     monkeypatch.chdir(tmp_path)
     _write_run_record(
-        tmp_path / "strix_runs",
+        tmp_path / "nightly_runs",
         "pentest_abcd",
         {
             "run_name": "pentest_abcd",
@@ -115,7 +115,7 @@ def test_resume_restores_a_target_less_workspace_mount(
             "scan_mode": "deep",
         },
     )
-    monkeypatch.setattr(sys, "argv", ["strix", "--resume", "pentest_abcd"])
+    monkeypatch.setattr(sys, "argv", ["nightly", "--resume", "pentest_abcd"])
 
     args = cli_main.parse_arguments()
 
@@ -133,7 +133,7 @@ def test_resume_reports_a_missing_workspace_directory(
 ) -> None:
     monkeypatch.chdir(tmp_path)
     _write_run_record(
-        tmp_path / "strix_runs",
+        tmp_path / "nightly_runs",
         "pentest_abcd",
         {
             "run_name": "pentest_abcd",
@@ -142,7 +142,7 @@ def test_resume_reports_a_missing_workspace_directory(
             "workspace_mount": str(tmp_path / "deleted"),
         },
     )
-    monkeypatch.setattr(sys, "argv", ["strix", "--resume", "pentest_abcd"])
+    monkeypatch.setattr(sys, "argv", ["nightly", "--resume", "pentest_abcd"])
 
     with pytest.raises(SystemExit):
         cli_main.parse_arguments()
@@ -155,11 +155,11 @@ def test_resume_still_requires_targets_or_a_workspace(
 ) -> None:
     monkeypatch.chdir(tmp_path)
     _write_run_record(
-        tmp_path / "strix_runs",
+        tmp_path / "nightly_runs",
         "pentest_abcd",
         {"run_name": "pentest_abcd", "targets_info": [], "local_sources": []},
     )
-    monkeypatch.setattr(sys, "argv", ["strix", "--resume", "pentest_abcd"])
+    monkeypatch.setattr(sys, "argv", ["nightly", "--resume", "pentest_abcd"])
 
     with pytest.raises(SystemExit):
         cli_main.parse_arguments()

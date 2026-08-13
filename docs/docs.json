@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
-  "name": "Strix",
+  "name": "Nightly",
   "colors": {
     "primary": "#000000",
     "light": "#ffffff",
@@ -74,7 +74,7 @@
         "tab": "Cloud",
         "groups": [
           {
-            "group": "Strix Cloud",
+            "group": "Nightly Cloud",
             "pages": [
               "cloud/overview"
             ]
@@ -86,7 +86,7 @@
       "anchors": [
         {
           "anchor": "GitHub",
-          "href": "https://github.com/usestrix/strix",
+          "href": "https://github.com/usenightly/nightly",
           "icon": "github"
         },
         {
@@ -101,14 +101,14 @@
     "links": [],
     "primary": {
       "type": "button",
-      "label": "Try Strix Cloud",
+      "label": "Try Nightly Cloud",
       "href": "https://app.strix.ai"
     }
   },
   "footer": {
     "socials": {
       "x": "https://x.com/strix_ai",
-      "github": "https://github.com/usestrix",
+      "github": "https://github.com/usenightly",
       "discord": "https://discord.gg/strix-ai"
     }
   },

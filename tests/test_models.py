@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from agents.model_settings import ModelSettings
 
-from strix.config.models import (
+from nightly.config.models import (
     RECOMMENDED_MODEL_NAMES,
     is_recommended_or_frontier_model,
     request_timeout_extra_args,

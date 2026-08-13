@@ -1,4 +1,4 @@
-"""Tests for pure input builders in strix.core.inputs."""
+"""Tests for pure input builders in nightly.core.inputs."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import Any
 import litellm
 import pytest
 
-from strix.core.inputs import (
+from nightly.core.inputs import (
     build_root_task,
     build_scope_context,
     child_initial_input,

@@ -21,9 +21,9 @@ from agents.models.interface import Model, ModelTracing
 from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
 from openai import AsyncOpenAI
 
-from strix.config import loader
-from strix.config.loader import load_settings
-from strix.config.models import StrixProvider, _TurnGuardModel, _with_idle_timeout
+from nightly.config import loader
+from nightly.config.loader import load_settings
+from nightly.config.models import NightlyProvider, _TurnGuardModel, _with_idle_timeout
 
 
 if TYPE_CHECKING:
@@ -131,7 +131,7 @@ async def test_events_keep_flowing_while_the_stream_is_alive() -> None:
 
 @pytest.fixture
 def _reset_settings(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
-    for key in ("STRIX_LLM", "LLM_DISABLE_STREAMING", "LLM_STREAM_IDLE_TIMEOUT"):
+    for key in ("NIGHTLY_LLM", "LLM_DISABLE_STREAMING", "LLM_STREAM_IDLE_TIMEOUT"):
         monkeypatch.delenv(key, raising=False)
     monkeypatch.setattr(loader, "_cached", None)
     monkeypatch.setattr(loader, "_override", None)
@@ -149,11 +149,11 @@ class _DummyModel(Model):
 def test_idle_timeout_is_configurable(
     monkeypatch: pytest.MonkeyPatch, _reset_settings: None
 ) -> None:
-    monkeypatch.setattr("strix.config.models.MultiProvider.get_model", lambda *_: _DummyModel())
+    monkeypatch.setattr("nightly.config.models.MultiProvider.get_model", lambda *_: _DummyModel())
     monkeypatch.setenv("LLM_STREAM_IDLE_TIMEOUT", "45")
     load_settings()
 
-    model = StrixProvider().get_model("openai/gpt-4o-mini")
+    model = NightlyProvider().get_model("openai/gpt-4o-mini")
     assert isinstance(model, _TurnGuardModel)
     assert model._stream_idle_timeout == 45
 
@@ -163,11 +163,11 @@ def test_idle_timeout_is_off_without_streaming(
 ) -> None:
     # LLM_DISABLE_STREAMING turns the whole request into one event, so an idle
     # gap would just be the request duration — the request timeout bounds that.
-    monkeypatch.setattr("strix.config.models.MultiProvider.get_model", lambda *_: _DummyModel())
+    monkeypatch.setattr("nightly.config.models.MultiProvider.get_model", lambda *_: _DummyModel())
     monkeypatch.setenv("LLM_STREAM_IDLE_TIMEOUT", "45")
     monkeypatch.setenv("LLM_DISABLE_STREAMING", "true")
     load_settings()
 
-    model = StrixProvider().get_model("openai/gpt-4o-mini")
+    model = NightlyProvider().get_model("openai/gpt-4o-mini")
     assert isinstance(model, _TurnGuardModel)
     assert model._stream_idle_timeout == 0

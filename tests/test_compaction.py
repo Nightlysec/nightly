@@ -9,8 +9,8 @@ import pytest
 from litellm.exceptions import BadRequestError, ContextWindowExceededError, RateLimitError
 from openai.types.responses import ResponseOutputMessage, ResponseOutputText
 
-from strix.config import ContextSettings
-from strix.llm import compaction
+from nightly.config import ContextSettings
+from nightly.llm import compaction
 
 
 if TYPE_CHECKING:
@@ -175,7 +175,7 @@ def _patch_summary(
                 captured["model"] = model_name
             return FakeModel()
 
-    monkeypatch.setattr(compaction, "StrixProvider", FakeProvider)
+    monkeypatch.setattr(compaction, "NightlyProvider", FakeProvider)
 
 
 @pytest.mark.asyncio
@@ -309,7 +309,7 @@ async def test_maybe_compact_skips_when_summary_fails(monkeypatch: pytest.Monkey
         def get_model(self, _model_name: str | None) -> Any:
             return BoomModel()
 
-    monkeypatch.setattr(compaction, "StrixProvider", BoomProvider)
+    monkeypatch.setattr(compaction, "NightlyProvider", BoomProvider)
     session = FakeSession(_turns(12))
     before = await session.get_items()
 

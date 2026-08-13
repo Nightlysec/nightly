@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING, Any
 
 from agents.sandbox.entries import LocalDir
 
-from strix.runtime.backends import (
+from nightly.runtime.backends import (
     _BACKENDS,
     _BIND_MOUNT_BACKENDS,
     backend_supports_bind_mounts,
     register_backend,
 )
-from strix.runtime.session_manager import build_bind_mounts, build_manifest_entries
+from nightly.runtime.session_manager import build_bind_mounts, build_manifest_entries
 
 
 if TYPE_CHECKING:

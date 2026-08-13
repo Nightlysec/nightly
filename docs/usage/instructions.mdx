@@ -1,6 +1,6 @@
 ---
 title: "Custom Instructions"
-description: "Guide Strix with custom testing instructions"
+description: "Guide Nightly with custom testing instructions"
 ---
 
 Use instructions to provide context, credentials, or focus areas for your scan.
@@ -8,7 +8,7 @@ Use instructions to provide context, credentials, or focus areas for your scan.
 ## Inline Instructions
 
 ```bash
-strix --target https://app.com --instruction "Focus on authentication vulnerabilities"
+nightly --target https://app.com --instruction "Focus on authentication vulnerabilities"
 ```
 
 ## File-Based Instructions
@@ -16,7 +16,7 @@ strix --target https://app.com --instruction "Focus on authentication vulnerabil
 For complex instructions, use a file:
 
 ```bash
-strix --target https://app.com --instruction-file ./pentest-instructions.md
+nightly --target https://app.com --instruction-file ./pentest-instructions.md
 ```
 
 ## Common Use Cases
@@ -24,28 +24,28 @@ strix --target https://app.com --instruction-file ./pentest-instructions.md
 ### Authenticated Testing
 
 ```bash
-strix --target https://app.com \
+nightly --target https://app.com \
   --instruction "Login with email: test@example.com, password: TestPass123"
 ```
 
 ### Focused Scope
 
 ```bash
-strix --target https://api.example.com \
+nightly --target https://api.example.com \
   --instruction "Focus on IDOR vulnerabilities in the /api/users endpoints"
 ```
 
 ### Exclusions
 
 ```bash
-strix --target https://app.com \
+nightly --target https://app.com \
   --instruction "Do not test /admin or /internal endpoints"
 ```
 
 ### API Testing
 
 ```bash
-strix --target https://api.example.com \
+nightly --target https://api.example.com \
   --instruction "Use API key header: X-API-Key: abc123. Focus on rate limiting bypass."
 ```
 
@@ -69,5 +69,5 @@ strix --target https://api.example.com \
 ```
 
 <Tip>
-Be specific. Good instructions help Strix prioritize the most valuable attack paths.
+Be specific. Good instructions help Nightly prioritize the most valuable attack paths.
 </Tip>

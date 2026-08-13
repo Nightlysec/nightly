@@ -1,6 +1,6 @@
 # Benchmarks
 
-We use security benchmarks to track Strix's capabilities and improvements over time. We plan to add more benchmarks, both existing ones and our own, to help the community evaluate and compare security agents.
+We use security benchmarks to track Nightly's capabilities and improvements over time. We plan to add more benchmarks, both existing ones and our own, to help the community evaluate and compare security agents.
 
 
 ## Full Details
@@ -21,7 +21,7 @@ For the complete benchmark results, evaluation scripts, and run data, see the [u
 
 The [XBOW benchmark](https://github.com/usestrix/benchmarks/tree/main/XBEN) is a set of 104 web security challenges designed to evaluate autonomous penetration testing agents. Each challenge follows a CTF format where the agent must discover and exploit vulnerabilities to extract a hidden flag.
 
-Strix `v0.4.0` achieved a **96% success rate** (100/104 challenges) in black-box mode.
+Nightly `v0.4.0` achieved a **96% success rate** (100/104 challenges) in black-box mode.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'pie1': '#3b82f6', 'pie2': '#1e3a5f', 'pieTitleTextColor': '#ffffff', 'pieSectionTextColor': '#ffffff', 'pieLegendTextColor': '#ffffff'}}}%%

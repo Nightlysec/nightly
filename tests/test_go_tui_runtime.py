@@ -15,10 +15,10 @@ from typing import Any, cast
 
 import pytest
 
-from strix.config.settings import DEFAULT_MAX_TURNS
-from strix.interface.tui import runtime as go_tui
-from strix.interface.tui import sidecar
-from strix.interface.tui.runtime import GoTuiRuntime
+from nightly.config.settings import DEFAULT_MAX_TURNS
+from nightly.interface.tui import runtime as go_tui
+from nightly.interface.tui import sidecar
+from nightly.interface.tui.runtime import GoTuiRuntime
 
 
 def args() -> argparse.Namespace:
@@ -42,10 +42,10 @@ def test_binary_command_prefers_packaged_sidecar(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Any,
 ) -> None:
-    sidecar = tmp_path / "strix-tui"
+    sidecar = tmp_path / "nightly-tui"
     sidecar.write_text("binary")
     monkeypatch.setattr(go_tui, "tui_source_dir", lambda: tmp_path / "tui-src")
-    monkeypatch.setattr(go_tui, "get_strix_resource_path", lambda *_parts: sidecar)
+    monkeypatch.setattr(go_tui, "get_nightly_resource_path", lambda *_parts: sidecar)
     monkeypatch.setattr(
         shutil,
         "which",
@@ -62,20 +62,20 @@ def test_binary_command_prefers_current_source_over_packaged_sidecar(
     source = tmp_path / "tui-src"
     source.mkdir()
     (source / "go.mod").write_text("module test\n")
-    sidecar = tmp_path / "strix-tui"
+    sidecar = tmp_path / "nightly-tui"
     sidecar.write_text("stale")
     monkeypatch.setattr(go_tui, "tui_source_dir", lambda: tmp_path / "tui-src")
-    monkeypatch.setattr(go_tui, "get_strix_resource_path", lambda *_parts: sidecar)
+    monkeypatch.setattr(go_tui, "get_nightly_resource_path", lambda *_parts: sidecar)
     monkeypatch.setattr(shutil, "which", lambda name: "/usr/bin/go" if name == "go" else None)
 
-    assert GoTuiRuntime.binary_command() == ["go", "run", "./cmd/strix-tui"]
+    assert GoTuiRuntime.binary_command() == ["go", "run", "./cmd/nightly-tui"]
 
 
 def test_binary_command_reports_missing_sidecar(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Any,
 ) -> None:
-    monkeypatch.setattr(go_tui, "get_strix_resource_path", lambda *_parts: tmp_path / "missing")
+    monkeypatch.setattr(go_tui, "get_nightly_resource_path", lambda *_parts: tmp_path / "missing")
     monkeypatch.setattr(shutil, "which", lambda _name: None)
     monkeypatch.setattr(go_tui, "tui_source_dir", lambda: tmp_path / "tui-src")
 
@@ -87,9 +87,9 @@ def test_binary_command_ignores_unconstrained_path_sidecar(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Any,
 ) -> None:
-    monkeypatch.setattr(go_tui, "get_strix_resource_path", lambda *_parts: tmp_path / "missing")
+    monkeypatch.setattr(go_tui, "get_nightly_resource_path", lambda *_parts: tmp_path / "missing")
     monkeypatch.setattr(go_tui, "tui_source_dir", lambda: tmp_path / "tui-src")
-    monkeypatch.setattr(shutil, "which", lambda _name: "/untrusted/path/strix-tui")
+    monkeypatch.setattr(shutil, "which", lambda _name: "/untrusted/path/nightly-tui")
 
     with pytest.raises(RuntimeError, match="Bubble Tea TUI binary not found"):
         GoTuiRuntime.binary_command()
@@ -102,7 +102,7 @@ def test_child_environment_excludes_credentials(monkeypatch: pytest.MonkeyPatch)
     monkeypatch.setenv("AWS_SESSION_TOKEN", "aws-token")
     monkeypatch.setenv("AWS_WEB_IDENTITY_TOKEN_FILE", "/var/run/secrets/aws-token")
     monkeypatch.setenv("VERTEXAI_CREDENTIALS", '{"private_key":"secret"}')
-    monkeypatch.setenv("STRIX_TUI_TOKEN", "stale-transport-token")
+    monkeypatch.setenv("NIGHTLY_TUI_TOKEN", "stale-transport-token")
     monkeypatch.setenv("TERM", "xterm-256color")
 
     env = sidecar.child_environment()
@@ -114,7 +114,7 @@ def test_child_environment_excludes_credentials(monkeypatch: pytest.MonkeyPatch)
     assert "AWS_SESSION_TOKEN" not in env
     assert "AWS_WEB_IDENTITY_TOKEN_FILE" not in env
     assert "VERTEXAI_CREDENTIALS" not in env
-    assert "STRIX_TUI_TOKEN" not in env
+    assert "NIGHTLY_TUI_TOKEN" not in env
 
 
 def test_accept_authenticated_connection() -> None:
@@ -159,12 +159,12 @@ async def test_windows_transport_launches_without_inherited_fd() -> None:
 import os
 import socket
 
-host, port = os.environ["STRIX_TUI_ADDR"].rsplit(":", 1)
+host, port = os.environ["NIGHTLY_TUI_ADDR"].rsplit(":", 1)
 with socket.create_connection((host, int(port))) as connection:
-    connection.sendall(os.environ["STRIX_TUI_TOKEN"].encode("ascii"))
+    connection.sendall(os.environ["NIGHTLY_TUI_TOKEN"].encode("ascii"))
 """
     env = os.environ.copy()
-    env.pop("STRIX_TUI_FD", None)
+    env.pop("NIGHTLY_TUI_FD", None)
 
     process, connection = await sidecar._launch_windows_tui_process(
         [sys.executable, "-c", child], env, None
@@ -774,7 +774,7 @@ async def test_scan_passes_max_turns_and_budget(monkeypatch: pytest.MonkeyPatch)
         "load_settings",
         lambda: SimpleNamespace(runtime=SimpleNamespace(image="test-image")),
     )
-    monkeypatch.setattr(go_tui, "run_strix_scan", run_scan)
+    monkeypatch.setattr(go_tui, "run_nightly_scan", run_scan)
 
     await runtime._run_scan()
 
@@ -818,13 +818,13 @@ async def test_setup_preflight_failure_does_not_start_scan(
 @pytest.mark.asyncio
 async def test_agent_state_sync_uses_latest_graph_snapshot_shape() -> None:
     runtime = GoTuiRuntime(args())
-    await runtime.coordinator.register("root", "Strix", parent_id=None)
+    await runtime.coordinator.register("root", "Nightly", parent_id=None)
     await runtime.coordinator.register("child", "Recon", parent_id="root")
     await runtime.coordinator.set_status("child", "failed", error="provider rejected request")
 
     await runtime._sync_agent_state()
 
-    assert runtime.live_view.agents["root"]["name"] == "Strix"
+    assert runtime.live_view.agents["root"]["name"] == "Nightly"
     child = runtime.live_view.agents["child"]
     assert child["name"] == "Recon"
     assert child["parent_id"] == "root"
@@ -836,7 +836,7 @@ async def test_agent_state_sync_uses_latest_graph_snapshot_shape() -> None:
 async def test_agent_state_sync_projects_completed_report() -> None:
     runtime = GoTuiRuntime(args())
     runtime.report_state = cast("Any", SimpleNamespace(run_record={"status": "completed"}))
-    await runtime.coordinator.register("root", "Strix", parent_id=None)
+    await runtime.coordinator.register("root", "Nightly", parent_id=None)
     await runtime.coordinator.set_status("root", "completed")
 
     await runtime._sync_agent_state()
@@ -848,7 +848,7 @@ async def test_agent_state_sync_projects_completed_report() -> None:
 async def test_agent_state_sync_does_not_mask_root_failure_with_completed_report() -> None:
     runtime = GoTuiRuntime(args())
     runtime.report_state = cast("Any", SimpleNamespace(run_record={"status": "completed"}))
-    await runtime.coordinator.register("root", "Strix", parent_id=None)
+    await runtime.coordinator.register("root", "Nightly", parent_id=None)
     await runtime.coordinator.set_status("root", "failed", error="finalization failed")
 
     await runtime._sync_agent_state()

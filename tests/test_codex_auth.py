@@ -12,7 +12,7 @@ from unittest import mock
 import pytest
 import requests
 
-from strix.config import codex
+from nightly.config import codex
 
 
 if TYPE_CHECKING:
@@ -30,7 +30,7 @@ def _fake_jwt(account_id: str) -> str:
 
 @pytest.fixture(autouse=True)
 def _tmp_store(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    path = tmp_path / "home" / ".strix" / "subscription-auth.json"
+    path = tmp_path / "home" / ".nightly" / "subscription-auth.json"
     monkeypatch.setattr(codex, "AUTH_PATH", path)
     return path
 
@@ -123,7 +123,7 @@ def test_content_guardrail_error_message() -> None:
     err = codex.CodexContentGuardrailError("gpt-5.6-sol")
     assert err.model == "gpt-5.6-sol"
     assert "gpt-5.6-sol" in str(err)
-    assert "STRIX_LLM" in str(err)
+    assert "NIGHTLY_LLM" in str(err)
 
 
 def test_account_id_from_jwt() -> None:
@@ -213,7 +213,7 @@ def test_get_valid_token_refreshes_and_persists_rotation(monkeypatch: pytest.Mon
 def test_get_valid_token_uses_token_rotated_by_another_process(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    # Simulate a parallel Strix process rotating the token while we wait for the
+    # Simulate a parallel Nightly process rotating the token while we wait for the
     # refresh guard: the pre-guard read sees the stale token, the in-guard read
     # sees the winner's fresh one, so we must NOT exchange the now-dead refresh.
     records = [

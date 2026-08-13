@@ -8,15 +8,15 @@ from typing import Any
 
 import pytest
 
-from strix.interface.scan_setup import attach_workspace_mount
-from strix.interface.utils import (
+from nightly.interface.scan_setup import attach_workspace_mount
+from nightly.interface.utils import (
     check_mountable_dir,
     collect_local_sources,
     dedupe_local_targets,
     infer_target_type,
     read_target_list_file,
 )
-from strix.runtime.session_manager import build_bind_mounts
+from nightly.runtime.session_manager import build_bind_mounts
 
 
 def _local_target(target_path: str) -> dict[str, Any]:

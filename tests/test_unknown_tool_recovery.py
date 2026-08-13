@@ -1,8 +1,8 @@
 """Tests for surviving a hallucinated tool name.
 
-Models regularly invent tool names that Strix does not register (``read_file``
+Models regularly invent tool names that Nightly does not register (``read_file``
 is a common one, borrowed from other agent frameworks). The SDK's default is to
-raise ``ModelBehaviorError``, which ends the whole run: nothing in Strix retries
+raise ``ModelBehaviorError``, which ends the whole run: nothing in Nightly retries
 it, so one bad token discards a scan. The runner therefore opts into
 ``tool_not_found_behavior="return_error_to_model"`` so the unknown call comes
 back as a tool result and the agent corrects itself on the next turn.
@@ -23,7 +23,7 @@ from agents.models.openai_chatcompletions import OpenAIChatCompletionsModel
 from agents.run import RunConfig
 from openai import AsyncOpenAI
 
-from strix.config.models import _NonStreamingModel
+from nightly.config.models import _NonStreamingModel
 
 
 if TYPE_CHECKING:
@@ -114,7 +114,7 @@ def _agent() -> Agent[Any]:
     def real_tool(n: int) -> str:
         return f"did {n}"
 
-    return Agent(name="Strix", instructions="test", tools=[real_tool], model="gw-model")
+    return Agent(name="Nightly", instructions="test", tools=[real_tool], model="gw-model")
 
 
 def _run_config(base_url: str, **kwargs: Any) -> RunConfig:

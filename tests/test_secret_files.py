@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from strix.utils.secret_files import SECRET_FILE_MODE, write_secret_text
+from nightly.utils.secret_files import SECRET_FILE_MODE, write_secret_text
 
 
 if TYPE_CHECKING:

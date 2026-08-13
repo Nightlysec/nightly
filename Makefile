@@ -1,6 +1,6 @@
 .PHONY: help install dev-install format lint type-check security check-all clean pre-commit setup-dev dev viewer wheel tui-build tui-test tui-lint
 
-TUI_BINARY := build/sidecar/strix-tui$(if $(filter Windows_NT,$(OS)),.exe)
+TUI_BINARY := build/sidecar/nightly-tui$(if $(filter Windows_NT,$(OS)),.exe)
 
 help:
 	@echo "Available commands:"
@@ -47,14 +47,14 @@ lint:
 
 type-check:
 	@echo "🔍 Type checking with mypy..."
-	uv run mypy strix/
+	uv run mypy nightly/
 	@echo "🔍 Type checking with pyright..."
-	uv run pyright strix/
+	uv run pyright nightly/
 	@echo "✅ Type checking complete!"
 
 security:
 	@echo "🔒 Running security checks with bandit..."
-	uv run bandit -r strix/ -c pyproject.toml
+	uv run bandit -r nightly/ -c pyproject.toml
 	@echo "✅ Security checks complete!"
 
 check-all: format lint type-check security
@@ -75,8 +75,8 @@ clean:
 
 viewer:
 	@echo "🖥️  Building the local-viewer SPA..."
-	cd strix/interface/viewer/frontend && npm ci && npm run build
-	@echo "✅ Viewer built to strix/interface/viewer/static/ (commit the changes)."
+	cd nightly/interface/viewer/frontend && npm ci && npm run build
+	@echo "✅ Viewer built to nightly/interface/viewer/static/ (commit the changes)."
 
 wheel:
 	uv build --wheel
@@ -86,10 +86,10 @@ dev: format lint type-check
 
 tui-build:
 	mkdir -p build/sidecar
-	cd strix/interface/tui && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o ../../../$(TUI_BINARY) ./cmd/strix-tui
+	cd nightly/interface/tui && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o ../../../$(TUI_BINARY) ./cmd/nightly-tui
 
 tui-test:
-	cd strix/interface/tui && go test -race ./...
+	cd nightly/interface/tui && go test -race ./...
 
 tui-lint:
-	cd strix/interface/tui && test -z "$$(gofmt -l .)" && go vet ./...
+	cd nightly/interface/tui && test -z "$$(gofmt -l .)" && go vet ./...

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pygments.lexers import BashLexer, PythonLexer
 
-from strix.interface.viewer.report_pdf import _strip_code_fence
-from strix.report.writer import (
+from nightly.interface.viewer.report_pdf import _strip_code_fence
+from nightly.report.writer import (
     guess_language_name,
     parse_fenced_code,
     resolve_lexer,

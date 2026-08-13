@@ -1,4 +1,4 @@
-"""STRIDE-leg tagging in the SARIF emitter (strix.report.sarif).
+"""STRIDE-leg tagging in the SARIF emitter (nightly.report.sarif).
 
 Every finding's SARIF rule (and, by inheritance via ``ruleId``, its results)
 carries one or more ``stride:<leg>`` tags derived from the finding's CWE, so the
@@ -13,7 +13,7 @@ from typing import Any
 
 import pytest
 
-from strix.report.sarif import (
+from nightly.report.sarif import (
     _CWE_TO_STRIDE,
     _DEFAULT_STRIDE_LEGS,
     _stride_legs_for_cwe,
@@ -49,7 +49,7 @@ def test_stride_tags_on_rule_for_known_cwe() -> None:
 def test_stride_tags_attach_to_rule_not_duplicated_on_result() -> None:
     """STRIDE tags live on the RULE; results inherit them via ruleId (standard
     SARIF) rather than duplicating — the result carries the matching ruleId and
-    its own strix.* properties, not a redundant tags copy."""
+    its own nightly.* properties, not a redundant tags copy."""
     doc = build_sarif_report([_finding(cwe="CWE-306")])
     rule = doc["runs"][0]["tool"]["driver"]["rules"][0]
     result = doc["runs"][0]["results"][0]

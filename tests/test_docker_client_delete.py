@@ -1,4 +1,4 @@
-"""StrixDockerSandboxClient.delete() best-effort teardown.
+"""NightlyDockerSandboxClient.delete() best-effort teardown.
 
 delete() kills the sandbox container before delegating to the SDK's delete().
 The kill is meant to be best-effort, but the ``contextlib.suppress`` around it
@@ -19,12 +19,12 @@ from agents.sandbox.sandboxes.docker import DockerSandboxClient
 from docker import errors as docker_errors
 from requests.exceptions import ConnectionError as RequestsConnectionError
 
-from strix.runtime.docker_client import StrixDockerSandboxClient
+from nightly.runtime.docker_client import NightlyDockerSandboxClient
 
 
-def _client_with_kill_error(exc: Exception) -> StrixDockerSandboxClient:
-    """A StrixDockerSandboxClient whose containers.get(...).kill() raises ``exc``."""
-    client = StrixDockerSandboxClient.__new__(StrixDockerSandboxClient)
+def _client_with_kill_error(exc: Exception) -> NightlyDockerSandboxClient:
+    """A NightlyDockerSandboxClient whose containers.get(...).kill() raises ``exc``."""
+    client = NightlyDockerSandboxClient.__new__(NightlyDockerSandboxClient)
     docker_client = MagicMock()
     docker_client.containers.get.side_effect = exc
     client.docker_client = docker_client
@@ -73,7 +73,7 @@ async def test_delete_does_not_swallow_unrelated_errors():
 @pytest.mark.asyncio
 async def test_delete_noop_without_container_id():
     """No container_id -> no kill attempt, just delegate."""
-    client = StrixDockerSandboxClient.__new__(StrixDockerSandboxClient)
+    client = NightlyDockerSandboxClient.__new__(NightlyDockerSandboxClient)
     client.docker_client = MagicMock()
     session = SimpleNamespace(_inner=SimpleNamespace(state=SimpleNamespace(container_id=None)))
 

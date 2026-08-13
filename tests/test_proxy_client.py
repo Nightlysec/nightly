@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 import pytest
 
-from strix.tools.proxy import caido_api, tools
+from nightly.tools.proxy import caido_api, tools
 
 
 if TYPE_CHECKING:

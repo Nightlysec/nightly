@@ -1,6 +1,6 @@
-# Contributing to Strix
+# Contributing to Nightly
 
-Thank you for your interest in contributing to Strix! This guide will help you get started with development and contributions.
+Thank you for your interest in contributing to Nightly! This guide will help you get started with development and contributions.
 
 ## 🚀 Development Setup
 
@@ -16,8 +16,8 @@ Thank you for your interest in contributing to Strix! This guide will help you g
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/usestrix/strix.git
-   cd strix
+   git clone https://github.com/usenightly/nightly.git
+   cd nightly
    ```
 
 2. **Install development dependencies**
@@ -31,18 +31,18 @@ Thank you for your interest in contributing to Strix! This guide will help you g
 
 3. **Configure your LLM provider**
    ```bash
-   export STRIX_LLM="openai/gpt-5.4"
+   export NIGHTLY_LLM="openai/gpt-5.4"
    export LLM_API_KEY="your-api-key"
    ```
 
-4. **Run Strix in development mode**
+4. **Run Nightly in development mode**
    ```bash
-   uv run strix --target https://example.com
+   uv run nightly --target https://example.com
    ```
 
 ## 📚 Contributing Skills
 
-Skills are specialized knowledge packages that enhance agent capabilities. See [strix/skills/README.md](strix/skills/README.md) for detailed guidelines.
+Skills are specialized knowledge packages that enhance agent capabilities. See [nightly/skills/README.md](nightly/skills/README.md) for detailed guidelines.
 
 ### Quick Guide
 
@@ -84,7 +84,7 @@ Skills are specialized knowledge packages that enhance agent capabilities. See [
 When reporting bugs, please include:
 
 - Python version and OS
-- Strix version
+- Nightly version
 - LLMs being used
 - Full error traceback
 - Steps to reproduce
@@ -102,17 +102,17 @@ We welcome feature ideas! Please:
 
 ## 🖥️ Local viewer SPA
 
-`strix view` serves a prebuilt web UI whose source lives in
-`strix/interface/viewer/frontend/` (a Vite + React project) and whose built output is
-committed to `strix/interface/viewer/static/` and shipped in the package. End users never
-run a JS build. If you change anything under `strix/interface/viewer/frontend/`, rebuild
+`nightly view` serves a prebuilt web UI whose source lives in
+`nightly/interface/viewer/frontend/` (a Vite + React project) and whose built output is
+committed to `nightly/interface/viewer/static/` and shipped in the package. End users never
+run a JS build. If you change anything under `nightly/interface/viewer/frontend/`, rebuild
 and commit the output:
 
 ```bash
-make viewer   # or: cd strix/interface/viewer/frontend && npm ci && npm run build
+make viewer   # or: cd nightly/interface/viewer/frontend && npm ci && npm run build
 ```
 
-Commit both the source change and the regenerated `strix/interface/viewer/static/`.
+Commit both the source change and the regenerated `nightly/interface/viewer/static/`.
 
 ## Package builds
 
@@ -125,15 +125,15 @@ make wheel
 ```
 
 The build hook (`scripts/tui_sidecar_hook.py`) compiles the sidecar, embeds it as
-`strix/bin/strix-tui`, and assigns the current platform tag. It requires Go
+`nightly/bin/nightly-tui`, and assigns the current platform tag. It requires Go
 1.24.x or newer and fails rather than producing a wheel without the sidecar.
-`scripts/build.sh` and `strix.spec` are likewise strict for frozen PyInstaller
+`scripts/build.sh` and `nightly.spec` are likewise strict for frozen PyInstaller
 releases.
 
 ## 🤝 Community
 
 - **Discord**: [Join our community](https://discord.gg/strix-ai)
-- **Issues**: [GitHub Issues](https://github.com/usestrix/strix/issues)
+- **Issues**: [GitHub Issues](https://github.com/usenightly/nightly/issues)
 
 ## ✨ Recognition
 

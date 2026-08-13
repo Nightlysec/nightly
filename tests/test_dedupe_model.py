@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from strix.config import loader
-from strix.config.settings import DedupeSettings
-from strix.report.dedupe import _dedupe_model_settings
+from nightly.config import loader
+from nightly.config.settings import DedupeSettings
+from nightly.report.dedupe import _dedupe_model_settings
 
 
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 def test_dedupe_key_sent_per_call_not_via_global_env() -> None:
-    dedupe = DedupeSettings(STRIX_DEDUPE_MODEL="deepseek/cheap", DEDUPE_LLM_API_KEY="dedupe-key")
+    dedupe = DedupeSettings(NIGHTLY_DEDUPE_MODEL="deepseek/cheap", DEDUPE_LLM_API_KEY="dedupe-key")
     settings = _dedupe_model_settings(dedupe, "deepseek/cheap", 300)
     # The key rides on the request, so a shared-provider main key can't clobber
     # it (and vice versa) through the global provider env var.
@@ -25,7 +25,7 @@ def test_dedupe_key_sent_per_call_not_via_global_env() -> None:
 
 
 def test_dedupe_settings_omit_api_key_when_unset() -> None:
-    dedupe = DedupeSettings(STRIX_DEDUPE_MODEL="deepseek/cheap")
+    dedupe = DedupeSettings(NIGHTLY_DEDUPE_MODEL="deepseek/cheap")
     settings = _dedupe_model_settings(dedupe, "deepseek/cheap", 300)
     assert "api_key" not in (settings.extra_args or {})
     assert "api_base" not in (settings.extra_args or {})
@@ -33,7 +33,7 @@ def test_dedupe_settings_omit_api_key_when_unset() -> None:
 
 def test_dedupe_endpoint_sent_per_call() -> None:
     dedupe = DedupeSettings(
-        STRIX_DEDUPE_MODEL="openai/cheap",
+        NIGHTLY_DEDUPE_MODEL="openai/cheap",
         DEDUPE_LLM_API_KEY="dedupe-key",
         DEDUPE_LLM_API_BASE="https://dedupe.example/v1",
     )
@@ -46,7 +46,7 @@ def test_dedupe_endpoint_sent_per_call() -> None:
 
 def test_dedicated_dedupe_model_uses_own_headers_not_main() -> None:
     dedupe = DedupeSettings(
-        STRIX_DEDUPE_MODEL="deepseek/cheap",
+        NIGHTLY_DEDUPE_MODEL="deepseek/cheap",
         DEDUPE_LLM_EXTRA_HEADERS={"X-Dedupe": "yes"},
     )
     settings = _dedupe_model_settings(dedupe, "deepseek/cheap", 300)
@@ -59,7 +59,7 @@ def test_dedicated_dedupe_model_gets_no_main_headers_by_default(
     monkeypatch.setenv("LLM_EXTRA_HEADERS", json.dumps({"X-Main": "secret"}))
     loader._cached = None
     try:
-        dedupe = DedupeSettings(STRIX_DEDUPE_MODEL="deepseek/cheap")
+        dedupe = DedupeSettings(NIGHTLY_DEDUPE_MODEL="deepseek/cheap")
         settings = _dedupe_model_settings(dedupe, "deepseek/cheap", 300)
         assert settings.extra_headers is None
     finally:
@@ -84,8 +84,8 @@ def test_dedupe_defaults_are_empty() -> None:
 
 
 def test_dedupe_model_read_from_env(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("STRIX_DEDUPE_MODEL", "deepseek/deepseek-v4-flash")
-    monkeypatch.setenv("STRIX_DEDUPE_REASONING_EFFORT", "low")
+    monkeypatch.setenv("NIGHTLY_DEDUPE_MODEL", "deepseek/deepseek-v4-flash")
+    monkeypatch.setenv("NIGHTLY_DEDUPE_REASONING_EFFORT", "low")
 
     settings = DedupeSettings()
 
@@ -97,16 +97,16 @@ def test_config_file_loads_dedupe_model(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    for key in ("STRIX_LLM", "STRIX_DEDUPE_MODEL", "STRIX_DEDUPE_REASONING_EFFORT"):
+    for key in ("NIGHTLY_LLM", "NIGHTLY_DEDUPE_MODEL", "NIGHTLY_DEDUPE_REASONING_EFFORT"):
         monkeypatch.delenv(key, raising=False)
     path = tmp_path / "config.json"
     path.write_text(
         json.dumps(
             {
                 "env": {
-                    "STRIX_LLM": "openai/root",
-                    "STRIX_DEDUPE_MODEL": "deepseek/cheap",
-                    "STRIX_DEDUPE_REASONING_EFFORT": "minimal",
+                    "NIGHTLY_LLM": "openai/root",
+                    "NIGHTLY_DEDUPE_MODEL": "deepseek/cheap",
+                    "NIGHTLY_DEDUPE_REASONING_EFFORT": "minimal",
                 }
             }
         ),

@@ -21,8 +21,8 @@ from agents.models.openai_responses import OpenAIResponsesModel
 from openai import AsyncOpenAI, BadRequestError
 from openai.types.responses import ResponseOutputMessage, ResponseOutputText
 
-from strix.config import codex
-from strix.config.models import _CodexResponsesModel
+from nightly.config import codex
+from nightly.config.models import _CodexResponsesModel
 
 
 if TYPE_CHECKING:

@@ -15,10 +15,10 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
-from strix.core import execution
-from strix.core.paths import runtime_state_dir
-from strix.interface.tui.backend.live_view import TuiLiveView as GoTuiLiveView
-from strix.interface.tui.live_view import (
+from nightly.core import execution
+from nightly.core.paths import runtime_state_dir
+from nightly.interface.tui.backend.live_view import TuiLiveView as GoTuiLiveView
+from nightly.interface.tui.live_view import (
     _INTERNAL_TURN_PREFIXES,
     TuiLiveView,
     _is_internal_agent_turn,
@@ -224,7 +224,7 @@ def _injected_strings(module: ModuleType) -> list[str]:
 def test_internal_turn_prefixes_still_match_what_is_injected() -> None:
     """The classifier copies sentences out of another module, so they can drift.
 
-    Both nudges are written inline in strix.core.execution, so there is nothing to
+    Both nudges are written inline in nightly.core.execution, so there is nothing to
     import and compare against. Read them back out of what that module can inject.
     """
     injected = _injected_strings(execution)
@@ -232,7 +232,7 @@ def test_internal_turn_prefixes_still_match_what_is_injected() -> None:
     assert nudges, "the no-tool-call nudges are no longer in the classifier"
     for nudge in nudges:
         assert any(nudge in literal for literal in injected), (
-            f"the classifier expects {nudge!r}, which strix.core.execution no longer "
+            f"the classifier expects {nudge!r}, which nightly.core.execution no longer "
             f"injects. A resumed scan would show that nudge as the user's own message."
         )
 
@@ -269,7 +269,7 @@ def test_user_instruction_opens_the_transcript_when_the_root_agent_appears(
     view.set_user_instruction("find IDOR in the checkout flow")
     assert _user_messages(view) == []
 
-    view.upsert_agent("ab12", name="Strix", parent_id=None, status="running")
+    view.upsert_agent("ab12", name="Nightly", parent_id=None, status="running")
     assert view.flush_user_instruction() is True
     assert _user_messages(view) == ["find IDOR in the checkout flow"]
 
@@ -285,7 +285,7 @@ def test_blank_user_instruction_adds_nothing() -> None:
 
     view.set_user_instruction("   ")
     view.set_user_instruction(None)
-    view.upsert_agent("ab12", name="Strix", parent_id=None, status="running")
+    view.upsert_agent("ab12", name="Nightly", parent_id=None, status="running")
 
     assert _user_messages(view) == []
 

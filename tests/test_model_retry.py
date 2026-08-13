@@ -2,7 +2,7 @@
 
 The SDK's built-in ``http_status`` policy only retries errors that carry a known
 HTTP status code. Quota/billing (and other provider-side) failures often surface
-*inside* a streamed response as a bare error with no status code, so Strix adds a
+*inside* a streamed response as a bare error with no status code, so Nightly adds a
 statusless retry policy to ``DEFAULT_MODEL_RETRY`` to keep them recoverable — the
 behavior the pre-SDK engine had.
 """
@@ -13,8 +13,8 @@ import asyncio
 
 from agents.retry import ModelRetryNormalizedError, RetryPolicyContext
 
-from strix.config import codex
-from strix.config.models import DEFAULT_MODEL_RETRY, _retry_statusless_provider_errors
+from nightly.config import codex
+from nightly.config.models import DEFAULT_MODEL_RETRY, _retry_statusless_provider_errors
 
 
 def _context(

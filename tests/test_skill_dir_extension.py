@@ -3,9 +3,9 @@ from pathlib import Path
 
 import pytest
 
-import strix.skills as skills_mod
-from strix.agents.prompt import render_system_prompt
-from strix.skills import (
+import nightly.skills as skills_mod
+from nightly.agents.prompt import render_system_prompt
+from nightly.skills import (
     get_all_skill_names,
     get_available_skills,
     load_skills,
@@ -14,7 +14,7 @@ from strix.skills import (
     skill_search_dirs,
     validate_requested_skills,
 )
-from strix.utils.resource_paths import get_strix_resource_path
+from nightly.utils.resource_paths import get_nightly_resource_path
 
 
 @pytest.fixture(autouse=True)
@@ -40,7 +40,7 @@ def _write_root_skill(root: Path, name: str, body: str) -> None:
 
 def test_no_registration_leaves_builtin_only() -> None:
     assert registered_skill_dirs() == ()
-    builtin = get_strix_resource_path("skills")
+    builtin = get_nightly_resource_path("skills")
     assert skill_search_dirs() == (builtin,)
     assert {"nmap", "subfinder"}.issubset(
         {skill["name"] for skill in get_available_skills()["tooling"]}

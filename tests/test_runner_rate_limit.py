@@ -1,4 +1,4 @@
-"""Tests for graceful handling of persistent RateLimitError in run_strix_scan."""
+"""Tests for graceful handling of persistent RateLimitError in run_nightly_scan."""
 
 from __future__ import annotations
 
@@ -11,11 +11,11 @@ import pytest
 from agents import ModelSettings
 from openai import RateLimitError
 
-import strix.tools.notes.tools as notes_tools
-import strix.tools.todo.tools as todo_tools
-from strix.core import runner
-from strix.core.agents import AgentCoordinator
-from strix.runtime import session_manager
+import nightly.tools.notes.tools as notes_tools
+import nightly.tools.todo.tools as todo_tools
+from nightly.core import runner
+from nightly.core.agents import AgentCoordinator
+from nightly.runtime import session_manager
 
 
 def _make_rate_limit_error() -> RateLimitError:
@@ -66,7 +66,7 @@ async def test_persistent_rate_limit_stops_gracefully(
     monkeypatch.setattr(runner, "build_root_task", lambda _scan_config: "task")
     monkeypatch.setattr(runner, "build_scope_context", lambda _scan_config: "")
     monkeypatch.setattr(runner, "make_model_settings", lambda *_args, **_kwargs: ModelSettings())
-    monkeypatch.setattr(runner, "build_strix_agent", lambda **_kwargs: object())
+    monkeypatch.setattr(runner, "build_nightly_agent", lambda **_kwargs: object())
     monkeypatch.setattr(runner, "make_child_factory", lambda **_kwargs: lambda **_k: object())
     monkeypatch.setattr(runner, "open_agent_session", lambda _root_id, _db: object())
 
@@ -78,7 +78,7 @@ async def test_persistent_rate_limit_stops_gracefully(
     coordinator = AgentCoordinator()
 
     with caplog.at_level(logging.WARNING):
-        result = await runner.run_strix_scan(
+        result = await runner.run_nightly_scan(
             scan_config={"targets": [], "scan_mode": "deep"},
             scan_id="scan-test",
             image="img",
@@ -90,5 +90,5 @@ async def test_persistent_rate_limit_stops_gracefully(
     assert len(root_ids) == 1
     assert coordinator.statuses[root_ids[0]] == "stopped"
     # the resume hint must carry the real scan id, not a literal placeholder
-    assert "strix --resume scan-test" in caplog.text
+    assert "nightly --resume scan-test" in caplog.text
     assert "<run_name>" not in caplog.text

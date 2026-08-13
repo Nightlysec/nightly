@@ -9,8 +9,8 @@ from typing import Any, cast
 import pytest
 from agents.tool import CustomTool, FunctionTool
 
-from strix.agents import factory
-from strix.config import load_settings
+from nightly.agents import factory
+from nightly.config import load_settings
 
 
 def _capturing_exec_tool(captured: dict[str, str]) -> FunctionTool:
@@ -111,7 +111,7 @@ async def test_chat_completions_filesystem_custom_tool_becomes_function_tool() -
 
 
 def test_function_tools_are_result_bounded() -> None:
-    agent = factory.build_strix_agent(is_root=True)
+    agent = factory.build_nightly_agent(is_root=True)
     by_name = {t.name: t for t in agent.tools}
 
-    assert getattr(by_name["think"], "_strix_bounded", False) is True
+    assert getattr(by_name["think"], "_nightly_bounded", False) is True

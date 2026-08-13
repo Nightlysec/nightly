@@ -1,22 +1,22 @@
 ---
 title: "CI/CD Integration"
-description: "Run Strix in any CI/CD pipeline"
+description: "Run Nightly in any CI/CD pipeline"
 ---
 
-Strix runs in headless mode for automated pipelines.
+Nightly runs in headless mode for automated pipelines.
 
 ## Headless Mode
 
 Use the `-n` or `--non-interactive` flag:
 
 ```bash
-strix -n --target ./app --scan-mode quick
+nightly -n --target ./app --scan-mode quick
 ```
 
-For pull-request style CI runs, Strix automatically scopes quick scans to changed files. You can force this behavior and set a base ref explicitly:
+For pull-request style CI runs, Nightly automatically scopes quick scans to changed files. You can force this behavior and set a base ref explicitly:
 
 ```bash
-strix -n --target ./app --scan-mode quick --scope-mode diff --diff-base origin/main
+nightly -n --target ./app --scan-mode quick --scope-mode diff --diff-base origin/main
 ```
 
 ## Exit Codes
@@ -35,11 +35,11 @@ security-scan:
   services:
     - docker:dind
   variables:
-    STRIX_LLM: $STRIX_LLM
+    NIGHTLY_LLM: $NIGHTLY_LLM
     LLM_API_KEY: $LLM_API_KEY
   script:
     - curl -sSL https://strix.ai/install | bash
-    - strix -n -t ./ --scan-mode quick
+    - nightly -n -t ./ --scan-mode quick
 ```
 
 ## Jenkins
@@ -48,14 +48,14 @@ security-scan:
 pipeline {
     agent any
     environment {
-        STRIX_LLM = credentials('strix-llm')
+        NIGHTLY_LLM = credentials('nightly-llm')
         LLM_API_KEY = credentials('llm-api-key')
     }
     stages {
         stage('Security Scan') {
             steps {
                 sh 'curl -sSL https://strix.ai/install | bash'
-                sh 'strix -n -t ./ --scan-mode quick'
+                sh 'nightly -n -t ./ --scan-mode quick'
             }
         }
     }
@@ -74,11 +74,11 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Install Strix
+          name: Install Nightly
           command: curl -sSL https://strix.ai/install | bash
       - run:
           name: Run Scan
-          command: strix -n -t ./ --scan-mode quick
+          command: nightly -n -t ./ --scan-mode quick
 ```
 
 <Note>

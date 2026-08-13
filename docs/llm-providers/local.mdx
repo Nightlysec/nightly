@@ -1,9 +1,9 @@
 ---
 title: "Local Models"
-description: "Run Strix with self-hosted LLMs for privacy and air-gapped testing"
+description: "Run Nightly with self-hosted LLMs for privacy and air-gapped testing"
 ---
 
-Running Strix with local models allows for completely offline, privacy-first security assessments. Data never leaves your machine, making this ideal for sensitive internal networks or air-gapped environments.
+Running Nightly with local models allows for completely offline, privacy-first security assessments. Data never leaves your machine, making this ideal for sensitive internal networks or air-gapped environments.
 
 ## Privacy vs Performance
 
@@ -15,7 +15,7 @@ Running Strix with local models allows for completely offline, privacy-first sec
 | **Setup** | Complex (GPU required) | Instant |
 
 <Warning>
-**Compatibility Note**: Strix relies on advanced agentic capabilities (tool use, multi-step planning, self-correction). Most local models, especially those under 70B parameters, struggle with these complex tasks.
+**Compatibility Note**: Nightly relies on advanced agentic capabilities (tool use, multi-step planning, self-correction). Most local models, especially those under 70B parameters, struggle with these complex tasks.
 
 For critical assessments, we strongly recommend using state-of-the-art cloud models like **Claude 4.5 Sonnet** or **GPT-5**. Use local models only when privacy is the absolute priority.
 </Warning>
@@ -31,9 +31,9 @@ For critical assessments, we strongly recommend using state-of-the-art cloud mod
    ```bash
    ollama pull qwen3-vl
    ```
-3. Configure Strix:
+3. Configure Nightly:
    ```bash
-   export STRIX_LLM="ollama/qwen3-vl"
+   export NIGHTLY_LLM="ollama/qwen3-vl"
    export LLM_API_BASE="http://localhost:11434"
    ```
 
@@ -51,7 +51,7 @@ We recommend these models for the best balance of reasoning and tool use:
 If you use LM Studio, vLLM, or other runners:
 
 ```bash
-export STRIX_LLM="openai/local-model"
+export NIGHTLY_LLM="openai/local-model"
 export LLM_API_BASE="http://localhost:1234/v1"  # Adjust port as needed
 ```
 
@@ -62,21 +62,21 @@ tenant routing) alongside the bearer token. Set them with `LLM_EXTRA_HEADERS` as
 a JSON object — they are sent on every request:
 
 ```bash
-export STRIX_LLM="openai/your-model"
+export NIGHTLY_LLM="openai/your-model"
 export LLM_API_BASE="https://your-gateway.example/v1"
 export LLM_API_KEY="your-bearer-token"          # sent as Authorization: Bearer ...
 export LLM_EXTRA_HEADERS='{"X-Feature-Key":"value","X-Tenant":"acme"}'
 ```
 
-For endpoints behind a private CA, point Strix at your certificate bundle with
+For endpoints behind a private CA, point Nightly at your certificate bundle with
 the standard `SSL_CERT_FILE=/path/to/ca-bundle.pem` — never disable TLS
 verification against a real endpoint.
 
 ## Tool calling must return structured `tool_calls`
 
-Strix is entirely tool-driven: every working turn must be a **native** function/tool call. If your inference server returns the tool call as plain assistant text instead of a structured `tool_calls` field, Strix never sees a call it can execute, so the agent makes no real progress — it re-prompts the model for a tool call and gives up once its recovery attempts are exhausted.
+Nightly is entirely tool-driven: every working turn must be a **native** function/tool call. If your inference server returns the tool call as plain assistant text instead of a structured `tool_calls` field, Nightly never sees a call it can execute, so the agent makes no real progress — it re-prompts the model for a tool call and gives up once its recovery attempts are exhausted.
 
-This is almost always an **inference-server configuration** problem, not a model or Strix problem. Common symptoms are the model printing a call as text such as:
+This is almost always an **inference-server configuration** problem, not a model or Nightly problem. Common symptoms are the model printing a call as text such as:
 
 ```text
 <tool_call>{"name": "exec_command", "arguments": {"cmd": "nmap ..."}}</tool_call>
@@ -96,7 +96,7 @@ The fix belongs on the inference server: it must be configured to parse the mode
 **Ollama**
 - Use a recent Ollama and a model whose template wires tools. Modern Ollama refuses tools (`tools param requires --jinja flag`) if the template lacks tool support.
 - For reasoning models (e.g. qwen3), disable the model's **thinking** mode — thinking left on frequently pushes the tool call into the text `content` instead of the structured `tool_calls` field. Turn it off on the Ollama side (a non-thinking model variant, or `think: false` in the model's parameters / `Modelfile`).
-- Raise **`num_ctx`** to at least 16k–32k. Strix sends a large system prompt plus many tool schemas; at Ollama's small default context the tool definitions are truncated out of the prompt and the model stops emitting valid calls. A short test prompt can look fine while a real scan fails, so set this explicitly rather than inferring it from a quick check.
+- Raise **`num_ctx`** to at least 16k–32k. Nightly sends a large system prompt plus many tool schemas; at Ollama's small default context the tool definitions are truncated out of the prompt and the model stops emitting valid calls. A short test prompt can look fine while a real scan fails, so set this explicitly rather than inferring it from a quick check.
 
 **vLLM**
 - Start with `--enable-auto-tool-choice`, a matching `--tool-call-parser` (`hermes`, `qwen3_xml`, or `llama3_json`), and a matching `--reasoning-parser` for reasoning models.

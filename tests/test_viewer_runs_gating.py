@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from strix.interface.viewer.server import build_runs_payload, resolve_run_dir
+from nightly.interface.viewer.server import build_runs_payload, resolve_run_dir
 
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 def _make_run(base: Path, name: str, *, severity: str = "high") -> Path:
-    run_dir = base / "strix_runs" / name
+    run_dir = base / "nightly_runs" / name
     run_dir.mkdir(parents=True)
     record = {
         "run_name": name,
@@ -31,7 +31,7 @@ def _make_run(base: Path, name: str, *, severity: str = "high") -> Path:
 
 
 def test_runs_payload_locked_when_unverified(tmp_path: Path) -> None:
-    base = tmp_path / "strix_runs"
+    base = tmp_path / "nightly_runs"
     _make_run(tmp_path, "alpha")
     _make_run(tmp_path, "beta")
 
@@ -42,7 +42,7 @@ def test_runs_payload_locked_when_unverified(tmp_path: Path) -> None:
 
 
 def test_runs_payload_lists_when_verified(tmp_path: Path) -> None:
-    base = tmp_path / "strix_runs"
+    base = tmp_path / "nightly_runs"
     _make_run(tmp_path, "alpha", severity="critical")
     _make_run(tmp_path, "beta", severity="info")
 
@@ -59,26 +59,26 @@ def test_runs_payload_lists_when_verified(tmp_path: Path) -> None:
 
 
 def test_runs_payload_empty_base(tmp_path: Path) -> None:
-    payload = build_runs_payload(tmp_path / "strix_runs", verified=True)
+    payload = build_runs_payload(tmp_path / "nightly_runs", verified=True)
     assert payload == {"locked": False, "count": 0, "runs": []}
 
 
 def test_resolve_run_dir_defaults_when_absent(tmp_path: Path) -> None:
-    base = tmp_path / "strix_runs"
+    base = tmp_path / "nightly_runs"
     default = _make_run(tmp_path, "alpha")
     assert resolve_run_dir(base, None, default) == default
     assert resolve_run_dir(base, "", default) == default
 
 
 def test_resolve_run_dir_valid_named_run(tmp_path: Path) -> None:
-    base = tmp_path / "strix_runs"
+    base = tmp_path / "nightly_runs"
     default = _make_run(tmp_path, "alpha")
     other = _make_run(tmp_path, "beta")
     assert resolve_run_dir(base, "beta", default) == other
 
 
 def test_resolve_run_dir_rejects_unknown_and_traversal(tmp_path: Path) -> None:
-    base = tmp_path / "strix_runs"
+    base = tmp_path / "nightly_runs"
     default = _make_run(tmp_path, "alpha")
     secret = tmp_path / "secret"
     secret.mkdir()

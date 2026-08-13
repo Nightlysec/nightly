@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
-from strix.interface.viewer import auth
+from nightly.interface.viewer import auth
 
 
 def _iso(delta: timedelta) -> str:
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 @pytest.fixture(autouse=True)
 def _tmp_auth(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     home = tmp_path / "home"
-    monkeypatch.setattr(auth, "AUTH_PATH", home / ".strix" / "viewer-auth.json")
+    monkeypatch.setattr(auth, "AUTH_PATH", home / ".nightly" / "viewer-auth.json")
     return auth.AUTH_PATH
 
 
@@ -151,7 +151,7 @@ def test_report_send_never_includes_password(monkeypatch: pytest.MonkeyPatch) ->
         return 200, {"ok": True}
 
     monkeypatch.setattr(auth, "_post_json", fake)
-    auth.report_send("tok", b"%PDF-fake", "strix-report-x.pdf", "x", "https://example.com")
+    auth.report_send("tok", b"%PDF-fake", "nightly-report-x.pdf", "x", "https://example.com")
 
     payload = captured["payload"]
     assert set(payload) == {"token", "pdf_base64", "filename", "run_name", "target"}
