@@ -41,7 +41,7 @@ from nightly.interface.update_check import (
 from nightly.interface.utils import (
     build_final_stats_text,
 )
-from nightly.telemetry import posthog, scarf
+from nightly.telemetry import scarf, supabase_events
 from nightly.telemetry.logging import configure_dependency_logging
 
 
@@ -464,7 +464,7 @@ def main() -> None:
         exit_reason = "interrupted"
     except Exception:
         exit_reason = "error"
-        posthog.error("unhandled_exception")
+        supabase_events.error("unhandled_exception")
         scarf.error("unhandled_exception")
         raise
     finally:
@@ -479,7 +479,7 @@ def main() -> None:
             # second Ctrl-C lands here; abandon them rather than trading a clean
             # exit for a traceback.
             with contextlib.suppress(KeyboardInterrupt, Exception):
-                posthog.end(report_state, exit_reason=exit_reason)
+                supabase_events.end(report_state, exit_reason=exit_reason)
                 scarf.end(report_state, exit_reason=exit_reason)
 
     if not args.run_name:

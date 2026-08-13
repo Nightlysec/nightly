@@ -120,9 +120,10 @@ class RuntimeSettings(BaseSettings):
 class TelemetrySettings(BaseSettings):
     model_config = _BASE_CONFIG
 
-    # Off by default in this fork: the PostHog key baked into telemetry/posthog.py
-    # was cleared (it was Strix's), so telemetry has nowhere to go until you
-    # configure your own PostHog project and re-enable this.
+    # Off by default: events go to this fork's own Supabase project
+    # (telemetry/supabase_events.py) via a write-only anon/publishable key —
+    # RLS on telemetry_events blocks select/update/delete for that role, so
+    # it can only append events, never read them back. Opt in explicitly.
     enabled: bool = Field(default=False, alias="NIGHTLY_TELEMETRY")
 
 

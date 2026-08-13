@@ -8,7 +8,7 @@ from typing import TypeGuard
 
 import yaml
 
-from nightly.telemetry import posthog, scarf
+from nightly.telemetry import scarf, supabase_events
 from nightly.utils.resource_paths import get_nightly_resource_path
 
 
@@ -247,7 +247,7 @@ def _track_skill_loaded(skill_name: str, file_path: Path) -> None:
         skill_name = "custom"
 
     def _send() -> None:
-        posthog.skill_loaded(skill_name)
+        supabase_events.skill_loaded(skill_name)
         scarf.skill_loaded(skill_name)
 
     threading.Thread(target=_send, daemon=True).start()

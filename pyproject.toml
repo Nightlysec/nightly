@@ -244,7 +244,7 @@ ignore = [
 # Stdlib HTTP handler overrides (do_GET/do_POST) and lazy imports that avoid a
 # circular dependency with nightly.telemetry / nightly.interface.viewer.report_pdf.
 "nightly/interface/viewer/server.py" = ["N802", "PLC0415"]
-# Lazy telemetry import to avoid importing PostHog before the viewer starts.
+# Lazy telemetry import to avoid importing the Supabase client before the viewer starts.
 "nightly/interface/viewer/cli.py" = ["PLC0415"]
 # Lazy imports inside functions to avoid circular dependency with
 # nightly.telemetry / nightly.report.dedupe / cvss.

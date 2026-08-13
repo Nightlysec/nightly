@@ -22,7 +22,7 @@ from nightly.report.writer import (
     write_run_record,
     write_vulnerabilities,
 )
-from nightly.telemetry import posthog, scarf
+from nightly.telemetry import scarf, supabase_events
 
 
 logger = logging.getLogger(__name__)
@@ -143,7 +143,7 @@ class ReportState:
         self._sarif_repo_ctx: dict[str, Any] | None = None
         self._sarif_repo_ctx_ready: bool = False
 
-        self.posthog_scan_ended_sent: bool = False
+        self.supabase_scan_ended_sent: bool = False
         self.scarf_scan_ended_sent: bool = False
         self.scan_ended_exit_reason: str | None = None
 
@@ -295,7 +295,7 @@ class ReportState:
 
         self.vulnerability_reports.append(report)
         logger.info(f"Added vulnerability report: {report_id} - {title}")
-        posthog.finding(severity, cwe=cwe, is_cve=bool(cve))
+        supabase_events.finding(severity, cwe=cwe, is_cve=bool(cve))
         scarf.finding(severity, cwe=cwe, is_cve=bool(cve))
 
         if self.vulnerability_found_callback:
@@ -355,7 +355,7 @@ class ReportState:
 
         logger.info("Updated scan final fields")
         self.save_run_data(mark_complete=True)
-        posthog.end(self, exit_reason="finished_by_tool")
+        supabase_events.end(self, exit_reason="finished_by_tool")
         scarf.end(self, exit_reason="finished_by_tool")
 
     def set_scan_config(self, config: dict[str, Any]) -> None:

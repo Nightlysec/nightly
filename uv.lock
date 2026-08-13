@@ -1105,7 +1105,7 @@ name = "macholib"
 version = "1.16.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "altgraph" },
+    { name = "altgraph", marker = "python_full_version < '3.15' and sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/10/2f/97589876ea967487978071c9042518d28b958d87b17dceb7cdc1d881f963/macholib-1.16.4.tar.gz", hash = "sha256:f408c93ab2e995cd2c46e34fe328b130404be143469e41bc366c807448979362", size = 59427, upload-time = "2025-11-22T08:28:38.373Z" }
 wheels = [
@@ -1371,6 +1371,82 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a2/6e/371856a3fb9d31ca8dac321cda606860fa4548858c0cc45d9d1d4ca2628b/mypy_extensions-1.1.0.tar.gz", hash = "sha256:52e68efc3284861e772bbcd66823fde5ae21fd2fdb51c62a211403730b916558", size = 6343, upload-time = "2025-04-22T14:54:24.164Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/79/7b/2c79738432f5c924bef5071f933bcc9efd0473bac3b4aa584a6f7c1c8df8/mypy_extensions-1.1.0-py3-none-any.whl", hash = "sha256:1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505", size = 4963, upload-time = "2025-04-22T14:54:22.983Z" },
+]
+
+[[package]]
+name = "nightly-agent"
+version = "1.5.1"
+source = { editable = "." }
+dependencies = [
+    { name = "caido-sdk-client" },
+    { name = "cryptography" },
+    { name = "cvss" },
+    { name = "docker" },
+    { name = "litellm" },
+    { name = "openai" },
+    { name = "openai-agents", extra = ["litellm"] },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "pypdf" },
+    { name = "pyyaml" },
+    { name = "reportlab" },
+    { name = "requests" },
+    { name = "rich" },
+]
+
+[package.optional-dependencies]
+bedrock = [
+    { name = "boto3" },
+]
+vertex = [
+    { name = "google-auth" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "bandit" },
+    { name = "mypy" },
+    { name = "pre-commit" },
+    { name = "pyinstaller", marker = "python_full_version < '3.15'" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
+    { name = "types-requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "boto3", marker = "extra == 'bedrock'", specifier = ">=1.28.0" },
+    { name = "caido-sdk-client", specifier = ">=0.2.0" },
+    { name = "cryptography", specifier = ">=48.0.1,<49" },
+    { name = "cvss", specifier = ">=3.2" },
+    { name = "docker", specifier = ">=7.1.0" },
+    { name = "google-auth", marker = "extra == 'vertex'", specifier = ">=2.0.0" },
+    { name = "litellm" },
+    { name = "openai", specifier = ">=2.45.0,<3" },
+    { name = "openai-agents", extras = ["litellm"], specifier = ">=0.19.0,<0.20" },
+    { name = "pydantic", specifier = ">=2.11.3" },
+    { name = "pydantic-settings", specifier = ">=2.13.0" },
+    { name = "pypdf", specifier = ">=5.0" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "reportlab", specifier = ">=4.0" },
+    { name = "requests", specifier = ">=2.32.0" },
+    { name = "rich" },
+]
+provides-extras = ["vertex", "bedrock"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "bandit", specifier = ">=1.8.3" },
+    { name = "mypy", specifier = ">=1.16.0" },
+    { name = "pre-commit", specifier = ">=4.2.0" },
+    { name = "pyinstaller", marker = "python_full_version >= '3.12' and python_full_version < '3.15'", specifier = ">=6.17.0" },
+    { name = "pyright", specifier = ">=1.1.401" },
+    { name = "pytest", specifier = ">=8.3" },
+    { name = "pytest-asyncio", specifier = ">=0.24" },
+    { name = "ruff", specifier = ">=0.11.13" },
+    { name = "types-requests", specifier = ">=2.32" },
 ]
 
 [[package]]
@@ -1798,13 +1874,13 @@ name = "pyinstaller"
 version = "6.21.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "altgraph" },
-    { name = "macholib", marker = "sys_platform == 'darwin'" },
-    { name = "packaging" },
-    { name = "pefile", marker = "sys_platform == 'win32'" },
-    { name = "pyinstaller-hooks-contrib" },
-    { name = "pywin32-ctypes", marker = "sys_platform == 'win32'" },
-    { name = "setuptools" },
+    { name = "altgraph", marker = "python_full_version < '3.15'" },
+    { name = "macholib", marker = "python_full_version < '3.15' and sys_platform == 'darwin'" },
+    { name = "packaging", marker = "python_full_version < '3.15'" },
+    { name = "pefile", marker = "python_full_version < '3.15' and sys_platform == 'win32'" },
+    { name = "pyinstaller-hooks-contrib", marker = "python_full_version < '3.15'" },
+    { name = "pywin32-ctypes", marker = "python_full_version < '3.15' and sys_platform == 'win32'" },
+    { name = "setuptools", marker = "python_full_version < '3.15'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d5/4d/ec706c3fcf39e26888c35b39615ff4d5865d184069666c47492cff1fbe50/pyinstaller-6.21.0.tar.gz", hash = "sha256:bb9fab705983e393a2d1cac77d6972513057ad800215fd861dc15ff5272e98fd", size = 4061519, upload-time = "2026-06-13T14:15:06.25Z" }
 wheels = [
@@ -1826,7 +1902,7 @@ name = "pyinstaller-hooks-contrib"
 version = "2026.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "packaging" },
+    { name = "packaging", marker = "python_full_version < '3.15'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/94/5b/c9fe0db5e83ee1c39b2258fa21d23b15e1a60786b6c5990ee5074ead8bb6/pyinstaller_hooks_contrib-2026.6.tar.gz", hash = "sha256:bef5002c32f4f50bd55b005da12cff64eca8783e7eaf86a06a62410164bab725", size = 173354, upload-time = "2026-06-08T22:37:16.152Z" }
 wheels = [
@@ -2374,82 +2450,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e9/88/35e4d27d9177d7df76d060e0a18f69c6c5794c96960c94042e20a12c8ba2/stevedore-5.8.0.tar.gz", hash = "sha256:b49867b32ca3016e94100e68dbf26e72aa7b8708d0a3f73c08aeb220370ac715", size = 514710, upload-time = "2026-05-18T09:15:27.731Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f5/ac/19f9941c74add59d17694930ec8105d5eddeee4ce56dd8632b765ca16d6c/stevedore-5.8.0-py3-none-any.whl", hash = "sha256:88eede9e66ca80e34085b9174e2327da2c61ac91f24f70e41c3ad76e4bb4872b", size = 54553, upload-time = "2026-05-18T09:15:25.82Z" },
-]
-
-[[package]]
-name = "strix-agent"
-version = "1.5.1"
-source = { editable = "." }
-dependencies = [
-    { name = "caido-sdk-client" },
-    { name = "cryptography" },
-    { name = "cvss" },
-    { name = "docker" },
-    { name = "litellm" },
-    { name = "openai" },
-    { name = "openai-agents", extra = ["litellm"] },
-    { name = "pydantic" },
-    { name = "pydantic-settings" },
-    { name = "pypdf" },
-    { name = "pyyaml" },
-    { name = "reportlab" },
-    { name = "requests" },
-    { name = "rich" },
-]
-
-[package.optional-dependencies]
-bedrock = [
-    { name = "boto3" },
-]
-vertex = [
-    { name = "google-auth" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "bandit" },
-    { name = "mypy" },
-    { name = "pre-commit" },
-    { name = "pyinstaller", marker = "python_full_version < '3.15'" },
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "ruff" },
-    { name = "types-requests" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "boto3", marker = "extra == 'bedrock'", specifier = ">=1.28.0" },
-    { name = "caido-sdk-client", specifier = ">=0.2.0" },
-    { name = "cryptography", specifier = ">=48.0.1,<49" },
-    { name = "cvss", specifier = ">=3.2" },
-    { name = "docker", specifier = ">=7.1.0" },
-    { name = "google-auth", marker = "extra == 'vertex'", specifier = ">=2.0.0" },
-    { name = "litellm" },
-    { name = "openai", specifier = ">=2.45.0,<3" },
-    { name = "openai-agents", extras = ["litellm"], specifier = ">=0.19.0,<0.20" },
-    { name = "pydantic", specifier = ">=2.11.3" },
-    { name = "pydantic-settings", specifier = ">=2.13.0" },
-    { name = "pypdf", specifier = ">=5.0" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "reportlab", specifier = ">=4.0" },
-    { name = "requests", specifier = ">=2.32.0" },
-    { name = "rich" },
-]
-provides-extras = ["vertex", "bedrock"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "bandit", specifier = ">=1.8.3" },
-    { name = "mypy", specifier = ">=1.16.0" },
-    { name = "pre-commit", specifier = ">=4.2.0" },
-    { name = "pyinstaller", marker = "python_full_version >= '3.12' and python_full_version < '3.15'", specifier = ">=6.17.0" },
-    { name = "pyright", specifier = ">=1.1.401" },
-    { name = "pytest", specifier = ">=8.3" },
-    { name = "pytest-asyncio", specifier = ">=0.24" },
-    { name = "ruff", specifier = ">=0.11.13" },
-    { name = "types-requests", specifier = ">=2.32" },
 ]
 
 [[package]]

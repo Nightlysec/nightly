@@ -15,8 +15,8 @@ export function ctaUrl(base: string, slug: string): string {
   return `${base}${sep}${CTA_PARAMS}&utm_content=${encodeURIComponent(slug)}`;
 }
 
-// Best-effort, anonymous beacon. The local server forwards this to PostHog only
-// if the user has telemetry enabled; it never blocks navigation. Undefined
+// Best-effort, anonymous beacon. The local server forwards this to Supabase
+// only if the user has telemetry enabled; it never blocks navigation. Undefined
 // props are dropped so we only send what is set. NEVER pass PII here (no email,
 // code, or report content) - the props are limited to anonymous metadata.
 export function track(event: string, props: Record<string, string | undefined> = {}): void {

@@ -79,9 +79,9 @@ def run_view(argv: list[str]) -> None:
     summary = read_run_summary(run_dir)
     live = not summary.get("finished", False)
 
-    from nightly.telemetry import posthog
+    from nightly.telemetry import supabase_events
 
-    posthog.viewer_opened(source="cli", live=live)
+    supabase_events.viewer_opened(source="cli", live=live)
 
     state_label = "[#eab308]live[/]" if live else "[#22c55e]finished[/]"
     console.print()

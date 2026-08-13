@@ -164,7 +164,7 @@ hiddenimports = [
     'nightly.runtime.session_manager',
     'nightly.telemetry',
     'nightly.telemetry.logging',
-    'nightly.telemetry.posthog',
+    'nightly.telemetry.supabase_events',
     'nightly.tools',
     'nightly.tools.agents_graph.tools',
     'nightly.tools.finish.tool',

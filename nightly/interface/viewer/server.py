@@ -204,32 +204,32 @@ def _make_handler(state: _ViewerState) -> type[BaseHTTPRequestHandler]:
 
         # Funnel events the viewer is allowed to forward. This handler is the
         # trust boundary: only these event names, with only their known props,
-        # ever reach PostHog. Everything else (including any PII) is dropped.
+        # ever reach Supabase. Everything else (including any PII) is dropped.
         _EMAIL_EVENTS = frozenset(
             {"email_submitted", "email_verified", "report_sent", "work_email_required"}
         )
 
         def _handle_event(self) -> None:
             body = self._read_body()
-            # Forwarded as anonymous PostHog events that respect the global
+            # Forwarded as anonymous telemetry events that respect the global
             # telemetry opt-out. Never forward the email, code, or report body:
             # only the whitelisted event names and their known props are passed.
             event = body.get("event")
             if event == "cta_clicked":
-                from nightly.telemetry import posthog
+                from nightly.telemetry import supabase_events
 
                 cta = str(body.get("cta") or "unknown")
                 surface = body.get("surface")
-                posthog.viewer_cta_clicked(cta, surface=str(surface) if surface else None)
+                supabase_events.viewer_cta_clicked(cta, surface=str(surface) if surface else None)
             elif event in self._EMAIL_EVENTS:
-                from nightly.telemetry import posthog
+                from nightly.telemetry import supabase_events
 
                 purpose = body.get("purpose")
-                posthog.viewer_email_event(str(event), purpose=str(purpose) if purpose else None)
+                supabase_events.viewer_email_event(str(event), purpose=str(purpose) if purpose else None)
             elif event == "agent_steered":
-                from nightly.telemetry import posthog
+                from nightly.telemetry import supabase_events
 
-                posthog.viewer_agent_steered()
+                supabase_events.viewer_agent_steered()
             self.send_response(HTTPStatus.NO_CONTENT)
             self.end_headers()
 
@@ -417,9 +417,9 @@ def _make_handler(state: _ViewerState) -> type[BaseHTTPRequestHandler]:
                 return
             # Server-authoritative: fire only after a successful relay (respects
             # the telemetry opt-out; no message/email content is sent).
-            from nightly.telemetry import posthog
+            from nightly.telemetry import supabase_events
 
-            posthog.viewer_feedback_submitted()
+            supabase_events.viewer_feedback_submitted()
             self._send_json(HTTPStatus.OK, {"ok": True})
 
         # Cap on a steering message so a runaway client cannot flood the agent.

@@ -2,7 +2,7 @@
 
 To help make Nightly better for everyone, we collect anonymized data that helps us understand how to better improve our AI security agent for our users, guide the addition of new features, and fix common errors and bugs. This feedback loop is crucial for improving Nightly's capabilities and user experience.
 
-We use [PostHog](https://posthog.com), an open-source analytics platform, for data collection and analysis, along with [Scarf](https://scarf.sh). Our telemetry implementation is fully transparent - you can review the source code ([posthog.py](https://github.com/usenightly/nightly/blob/main/nightly/telemetry/posthog.py), [scarf.py](https://github.com/usenightly/nightly/blob/main/nightly/telemetry/scarf.py)) to see exactly what we track.
+We use [Supabase](https://supabase.com) (Postgres, via a write-only anon/publishable key gated by row-level security) for data collection and storage, along with [Scarf](https://scarf.sh) for gateway analytics — though the Scarf gateway isn't a registered endpoint for this fork yet, so those sends currently fail closed rather than reaching anyone. Our telemetry implementation is fully transparent - you can review the source code ([supabase_events.py](https://github.com/usenightly/nightly/blob/main/nightly/telemetry/supabase_events.py), [scarf.py](https://github.com/usenightly/nightly/blob/main/nightly/telemetry/scarf.py)) to see exactly what we track. The `telemetry_events` table only accepts inserts from the publishable key used by the client — it cannot select, update, or delete rows, so the data is a one-way beacon even to someone holding that key.
 
 ### Telemetry Policy
 

@@ -207,7 +207,7 @@ def test_server_event_endpoint_forwards_cta(
 
     seen: list[tuple[str, str | None]] = []
     monkeypatch.setattr(
-        "nightly.telemetry.posthog.viewer_cta_clicked",
+        "nightly.telemetry.supabase_events.viewer_cta_clicked",
         lambda cta, surface=None: seen.append((cta, surface)),
     )
 
@@ -238,7 +238,7 @@ def test_server_event_endpoint_forwards_email_funnel(
 
     seen: list[tuple[str, str | None]] = []
     monkeypatch.setattr(
-        "nightly.telemetry.posthog.viewer_email_event",
+        "nightly.telemetry.supabase_events.viewer_email_event",
         lambda step, purpose=None: seen.append((step, purpose)),
     )
 
@@ -269,7 +269,7 @@ def test_server_event_endpoint_forwards_agent_steered(
     _bundle(tmp_path, monkeypatch)
 
     seen: list[bool] = []
-    monkeypatch.setattr("nightly.telemetry.posthog.viewer_agent_steered", lambda: seen.append(True))
+    monkeypatch.setattr("nightly.telemetry.supabase_events.viewer_agent_steered", lambda: seen.append(True))
 
     httpd, url, _ = serve(run_dir, open_browser=False)
     try:
@@ -295,7 +295,7 @@ def test_feedback_records_telemetry_on_success(
     sent: list[bool] = []
     monkeypatch.setattr("nightly.interface.viewer.auth.feedback_submit", lambda *_a: None)
     monkeypatch.setattr(
-        "nightly.telemetry.posthog.viewer_feedback_submitted", lambda: sent.append(True)
+        "nightly.telemetry.supabase_events.viewer_feedback_submitted", lambda: sent.append(True)
     )
 
     httpd, url, token = serve(run_dir, open_browser=False)

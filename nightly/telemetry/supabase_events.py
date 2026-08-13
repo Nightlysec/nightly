@@ -19,35 +19,44 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# Cleared: this was Strix's PostHog project key. Telemetry is off by default
-# (see TelemetrySettings.enabled) and has nowhere to send events until you set
-# your own PostHog project key here.
-_POSTHOG_PUBLIC_API_KEY = ""
-_POSTHOG_HOST = "https://us.i.posthog.com"
+# This project (and the publishable key below) belongs to this fork, not
+# Strix — the key is meant to be public; it can only INSERT into
+# telemetry_events, per the table's row-level security policy (no
+# select/update/delete for anon/publishable requests).
+_SUPABASE_URL = "https://gdidwhpyrblpqjvflhnx.supabase.co"
+_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_h7OWx4N9Xc0s4lzF8esgHQ_FT9MtzR4"
+_INSERT_URL = f"{_SUPABASE_URL}/rest/v1/telemetry_events"
 
 
 def _is_enabled() -> bool:
-    return bool(_POSTHOG_PUBLIC_API_KEY) and load_settings().telemetry.enabled
+    return bool(_SUPABASE_PUBLISHABLE_KEY) and load_settings().telemetry.enabled
 
 
 def _send(event: str, properties: dict[str, Any]) -> bool:
     if not _is_enabled():
-        logger.debug("posthog disabled; skipping event %s", event)
+        logger.debug("supabase telemetry disabled; skipping event %s", event)
         return False
     try:
         payload = {
-            "api_key": _POSTHOG_PUBLIC_API_KEY,
             "event": event,
-            "distinct_id": SESSION_ID,
+            "session_id": SESSION_ID,
             "properties": properties,
         }
-        with requests.post(f"{_POSTHOG_HOST}/capture/", json=payload, timeout=SEND_TIMEOUT):
+        headers = {
+            "apikey": _SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": f"Bearer {_SUPABASE_PUBLISHABLE_KEY}",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal",
+        }
+        with requests.post(
+            _INSERT_URL, json=payload, headers=headers, timeout=SEND_TIMEOUT
+        ):
             pass
     except Exception:  # noqa: BLE001
-        logger.debug("posthog send failed for event %s", event, exc_info=True)
+        logger.debug("supabase telemetry send failed for event %s", event, exc_info=True)
         return False
     else:
-        logger.debug("posthog event sent: %s", event)
+        logger.debug("supabase telemetry event sent: %s", event)
         return True
 
 
@@ -97,7 +106,7 @@ def skill_loaded(skill_name: str) -> None:
 
 
 def end(report_state: "ReportState", exit_reason: str = "completed") -> None:
-    if report_state.posthog_scan_ended_sent:
+    if report_state.supabase_scan_ended_sent:
         return
     if report_state.scan_ended_exit_reason is None:
         report_state.scan_ended_exit_reason = exit_reason
@@ -130,7 +139,7 @@ def end(report_state: "ReportState", exit_reason: str = "completed") -> None:
     except (TypeError, ValueError, AttributeError):
         pass
 
-    report_state.posthog_scan_ended_sent = _send(
+    report_state.supabase_scan_ended_sent = _send(
         "scan_ended",
         {
             **base_props(),

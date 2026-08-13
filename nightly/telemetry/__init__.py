@@ -1,7 +1,7 @@
-from . import posthog, scarf
+from . import scarf, supabase_events
 
 
 __all__ = [
-    "posthog",
     "scarf",
+    "supabase_events",
 ]

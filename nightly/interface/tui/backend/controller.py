@@ -445,7 +445,7 @@ class TuiController:
             self.viewer_url = authorized_url(url, token)
             self.viewer_status = "running"
             with contextlib.suppress(Exception):
-                from nightly.telemetry import posthog
+                from nightly.telemetry import supabase_events
 
                 live = self.report_state.run_record.get("status") not in {
                     "completed",
@@ -453,7 +453,7 @@ class TuiController:
                     "failed",
                     "interrupted",
                 }
-                posthog.viewer_opened(source="tui", live=live)
+                supabase_events.viewer_opened(source="tui", live=live)
         except Exception:  # noqa: BLE001 - viewer startup failures must not crash the TUI
             self.viewer_status = "failed"
             return {"status": self.viewer_status, "error": "Viewer failed to start"}

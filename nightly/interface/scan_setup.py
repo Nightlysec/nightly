@@ -31,7 +31,7 @@ from nightly.interface.utils import (
     stage_api_specs,
     write_fetched_collection,
 )
-from nightly.telemetry import posthog, scarf
+from nightly.telemetry import scarf, supabase_events
 from nightly.utils.api_spec import (
     SpecParseError,
     fetch_postman_collection,
@@ -231,7 +231,7 @@ def telemetry_start(args: argparse.Namespace) -> None:
         "interactive": not args.non_interactive,
         "has_instructions": bool(args.instruction),
     }
-    posthog.start(**kwargs)
+    supabase_events.start(**kwargs)
     scarf.start(**kwargs)
 
 

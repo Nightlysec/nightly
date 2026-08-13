@@ -84,8 +84,8 @@ affecting the agents that do the actual testing.
   Postman API key (`PMAK-…`). Enables fetching Postman collections by id as a target (`postman://<collection-uid>`), and Postman environments (`postman://<collection-uid>?env=<environment-uid>`) to resolve collection variables. Not needed when passing a local collection export file.
 </ParamField>
 
-<ParamField path="NIGHTLY_TELEMETRY" default="1" type="string">
-  Telemetry toggle. Set to `0`, `false`, `no`, or `off` to disable telemetry (PostHog, Scarf, OTEL).
+<ParamField path="NIGHTLY_TELEMETRY" default="0" type="string">
+  Telemetry toggle. Off by default in this fork — set to `1`, `true`, `yes`, or `on` to enable telemetry (Supabase, Scarf).
 </ParamField>
 
 <ParamField path="TRACELOOP_BASE_URL" type="string">
