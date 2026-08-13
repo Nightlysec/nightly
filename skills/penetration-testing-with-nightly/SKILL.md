@@ -3,7 +3,7 @@ name: penetration-testing-with-nightly
 description: Pentest a web app, API, codebase, repository, URL, domain, or IP with Nightly — autonomous AI penetration testing that exploits and proves vulnerabilities (OWASP Top 10 and beyond — injection, XSS, SSRF, auth/access-control flaws, IDOR, business logic) instead of just flagging them. Runs self-hosted with the open-source CLI or via the managed app.strix.ai cloud, and returns validated findings with proof-of-concept exploits (Markdown, JSON, CSV, SARIF). Use when the user asks to pentest, hack, security-scan, security-audit, or find vulnerabilities in an app, API, website, or repo.
 license: Apache-2.0
 metadata:
-  author: usenightly
+  author: nightlysec
   homepage: https://docs.strix.ai
 ---
 
@@ -43,7 +43,7 @@ If unsure and the user has (or will create) an app.strix.ai account, prefer **Cl
 1. **Docker running** — check with `docker info`. The first scan pulls the sandbox image automatically.
 2. **Nightly installed** — check with `nightly --version`. Install if missing (no hosted release yet, so clone and run the installer directly — `pipx install nightly-agent` also won't work until a package is published):
    ```bash
-   git clone https://github.com/usenightly/nightly.git && cd nightly
+   git clone https://github.com/nightlysec/nightly.git && cd nightly
    ./scripts/install.sh
    ```
 3. **LLM configured** — two environment variables:

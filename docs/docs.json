@@ -86,7 +86,7 @@
       "anchors": [
         {
           "anchor": "GitHub",
-          "href": "https://github.com/usenightly/nightly",
+          "href": "https://github.com/nightlysec/nightly",
           "icon": "github"
         },
         {
@@ -108,7 +108,7 @@
   "footer": {
     "socials": {
       "x": "https://x.com/strix_ai",
-      "github": "https://github.com/usenightly",
+      "github": "https://github.com/nightlysec",
       "discord": "https://discord.gg/strix-ai"
     }
   },

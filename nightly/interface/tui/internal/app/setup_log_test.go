@@ -7,8 +7,8 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/muesli/termenv"
-	"github.com/usenightly/nightly/tui/internal/protocol"
-	"github.com/usenightly/nightly/tui/internal/render"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/render"
 )
 
 // Retrying a launch that cannot succeed yet must not fill the log with copies of

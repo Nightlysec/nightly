@@ -17,8 +17,8 @@
 <a href="https://strix.ai"><img src="https://img.shields.io/badge/Website-strix.ai-f0f0f0?style=for-the-badge&logoColor=000000" alt="Website"></a>
 [![](https://dcbadge.limes.pink/api/server/strix-ai)](https://discord.gg/strix-ai)
 
-<a href="https://deepwiki.com/usenightly/nightly"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-<a href="https://github.com/usenightly/nightly"><img src="https://img.shields.io/github/stars/usenightly/nightly?style=flat-square" alt="GitHub Stars"></a>
+<a href="https://deepwiki.com/nightlysec/nightly"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+<a href="https://github.com/nightlysec/nightly"><img src="https://img.shields.io/github/stars/nightlysec/nightly?style=flat-square" alt="GitHub Stars"></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-3b82f6?style=flat-square" alt="License"></a>
 <a href="https://pypi.org/project/nightly-agent/"><img src="https://img.shields.io/pypi/v/nightly-agent?style=flat-square" alt="PyPI Version"></a>
 
@@ -27,8 +27,8 @@
 <a href="https://x.com/strix_ai"><img src="https://github.com/usestrix/.github/raw/main/imgs/X.png" height="40" alt="Follow on X"></a>
 
 
-<a href="https://trendshift.io/repositories/15362?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-15362" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/15362/weekly" alt="usenightly%2Fnightly | Trendshift" width="250" height="55"/></a>
-<a href="https://trendshift.io/repositories/15362" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15362" alt="usenightly/nightly | Trendshift" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/15362?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-15362" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/15362/weekly" alt="nightlysec%2Fnightly | Trendshift" width="250" height="55"/></a>
+<a href="https://trendshift.io/repositories/15362" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15362" alt="nightlysec/nightly | Trendshift" width="250" height="55"/></a>
 
 </div>
 
@@ -79,7 +79,7 @@ Nightly are autonomous AI penetration testing agents that act just like real hac
 
 ```bash
 # Install Nightly (run from a clone of this repo; no hosted release yet)
-git clone https://github.com/usenightly/nightly.git && cd nightly
+git clone https://github.com/nightlysec/nightly.git && cd nightly
 ./scripts/install.sh
 
 # Configure your AI provider
@@ -114,7 +114,7 @@ Try the Nightly full-stack penetration testing platform at **[app.strix.ai](http
 Nightly is agent-ready. Give Claude Code, Cursor, Codex, or any [SKILL.md-compatible](https://agentskills.io) agent the ability to run pentests, fix findings, and set up CI scanning:
 
 ```bash
-npx skills add usenightly/nightly
+npx skills add nightlysec/nightly
 ```
 
 This installs four skills: **penetration-testing-with-nightly** (run headless scans and read results), **managed-pentesting-with-nightly** (drive the managed [app.strix.ai](https://app.strix.ai) platform via REST — no local Docker or LLM key), **fix-security-vulnerabilities-with-nightly** (remediate + re-scan to verify), and **ci-security-scanning-with-nightly** (PR scanning in CI). Agents can run Nightly two ways with the same engine — the open-source CLI locally, or the managed cloud when there's no local infra — and read [`AGENTS.md`](AGENTS.md) for a quick reference, [docs.strix.ai/llms.txt](https://docs.strix.ai/llms.txt) for the CLI docs, and [docs.app.strix.ai](https://docs.app.strix.ai) for the API.
@@ -275,7 +275,7 @@ jobs:
         # No hosted install endpoint yet — clone the Nightly source and run
         # its installer directly (see scripts/install.sh).
         run: |
-          git clone --depth 1 https://github.com/usenightly/nightly.git /tmp/nightly-src
+          git clone --depth 1 https://github.com/nightlysec/nightly.git /tmp/nightly-src
           /tmp/nightly-src/scripts/install.sh
 
       - name: Run Nightly
@@ -338,7 +338,7 @@ Full documentation is available at **[docs.strix.ai](https://docs.strix.ai)** - 
 
 ## Contributing
 
-We welcome contributions of code, docs, and new skills - check out our [Contributing Guide](https://docs.strix.ai/contributing) to get started or open a [pull request](https://github.com/usenightly/nightly/pulls)/[issue](https://github.com/usenightly/nightly/issues).
+We welcome contributions of code, docs, and new skills - check out our [Contributing Guide](https://docs.strix.ai/contributing) to get started or open a [pull request](https://github.com/nightlysec/nightly/pulls)/[issue](https://github.com/nightlysec/nightly/issues).
 
 ## Join Our Community
 

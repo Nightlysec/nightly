@@ -35,7 +35,7 @@ from nightly.telemetry._common import get_version
 
 logger = logging.getLogger(__name__)
 
-GITHUB_REPO = "usenightly/nightly"
+GITHUB_REPO = "nightlysec/nightly"
 PYPI_PACKAGE = "nightly-agent"
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60
 REQUEST_TIMEOUT_SECONDS = 5
@@ -387,7 +387,7 @@ def self_update(console: Console | None = None, version: str | None = None) -> b
         console.print(f"[bold red]Update failed:[/] {e}")
         console.print(
             "[dim]You can reinstall manually with:[/] "
-            "[#60a5fa]git clone https://github.com/usenightly/nightly.git "
+            "[#60a5fa]git clone https://github.com/nightlysec/nightly.git "
             "&& cd nightly && ./scripts/install.sh[/]"
         )
         return False

@@ -10,8 +10,8 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
-	"github.com/usenightly/nightly/tui/internal/protocol"
-	"github.com/usenightly/nightly/tui/internal/render"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/render"
 )
 
 // eventSpan records which content lines of the chat trace belong to an

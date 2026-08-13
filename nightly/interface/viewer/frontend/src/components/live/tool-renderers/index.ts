@@ -29,7 +29,7 @@ import RespondRenderer from "./RespondRenderer";
 /**
  * Tool-renderer mapping — data-driven, keyed by the engine's tool *family*.
  *
- * The OSS nightly engine (usenightly/nightly) is the source of truth for tool names:
+ * The OSS nightly engine (nightlysec/nightly) is the source of truth for tool names:
  * see `nightly/tools/**` for definitions and `nightly/interface/tui/renderers/` for
  * the TUI equivalents of these components. Tools come in families that share a
  * React renderer + icon (terminal, proxy, notes, todos, …), so we describe each

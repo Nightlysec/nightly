@@ -16,7 +16,7 @@ Thank you for your interest in contributing to Nightly! This guide will help you
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/usenightly/nightly.git
+   git clone https://github.com/nightlysec/nightly.git
    cd nightly
    ```
 
@@ -133,7 +133,7 @@ releases.
 ## 🤝 Community
 
 - **Discord**: [Join our community](https://discord.gg/strix-ai)
-- **Issues**: [GitHub Issues](https://github.com/usenightly/nightly/issues)
+- **Issues**: [GitHub Issues](https://github.com/nightlysec/nightly/issues)
 
 ## ✨ Recognition
 

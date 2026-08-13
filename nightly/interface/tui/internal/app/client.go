@@ -14,7 +14,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/usenightly/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
 )
 
 const (

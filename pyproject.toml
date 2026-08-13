@@ -6,7 +6,7 @@ readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.12"
 authors = [
-  { name = "Nightly", email = "hi@usenightly.com" },
+  { name = "Nightly", email = "hi@nightlysec.com" },
 ]
 keywords = [
   "cybersecurity",

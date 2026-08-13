@@ -3,7 +3,7 @@ name: ci-security-scanning-with-nightly
 description: Add security scanning to CI/CD with Nightly — GitHub Actions, GitLab CI, or any pipeline — so every pull request gets a diff-scoped AI pentest that blocks vulnerable code before it merges, with results as PR comments and SARIF uploaded to code scanning. Covers both the self-hosted open-source CLI (runs in your runner) and the managed app.strix.ai platform (GitHub/GitLab app or API, no runner infra). Use when the user asks to add security scanning, SAST/DAST, pentesting, vulnerability checks, or automated security review to their CI pipeline, pre-merge gate, or PR workflow.
 license: Apache-2.0
 metadata:
-  author: usenightly
+  author: nightlysec
   homepage: https://docs.strix.ai
 ---
 
@@ -44,7 +44,7 @@ jobs:
         # No hosted install endpoint yet — clone the Nightly source and run
         # its installer directly (see scripts/install.sh).
         run: |
-          git clone --depth 1 https://github.com/usenightly/nightly.git /tmp/nightly-src
+          git clone --depth 1 https://github.com/nightlysec/nightly.git /tmp/nightly-src
           /tmp/nightly-src/scripts/install.sh
 
       - name: Run Security Scan
@@ -94,7 +94,7 @@ Any pipeline works the same way — install, set the two env vars, run headless:
 ```bash
 # No hosted install endpoint yet — clone the Nightly source and run its
 # installer directly (see scripts/install.sh).
-git clone --depth 1 https://github.com/usenightly/nightly.git /tmp/nightly-src
+git clone --depth 1 https://github.com/nightlysec/nightly.git /tmp/nightly-src
 /tmp/nightly-src/scripts/install.sh
 # Resolve the PR's base branch robustly (use your CI's base-branch variable if it
 # has one, e.g. GitHub Actions: origin/${{ github.base_ref }}). Avoid piping the

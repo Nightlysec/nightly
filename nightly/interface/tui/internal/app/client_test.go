@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/usenightly/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
 )
 
 func writeEnvelopeFrame(writer io.Writer, envelope protocol.Envelope) error {

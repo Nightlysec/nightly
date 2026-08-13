@@ -7,7 +7,7 @@ Nightly is an open-source autonomous AI pentesting tool. This file is for AI cod
 Install the agent skills for step-by-step workflows:
 
 ```bash
-npx skills add usenightly/nightly
+npx skills add nightlysec/nightly
 ```
 
 - `penetration-testing-with-nightly` — run a headless pentest against code, URLs, domains, or IPs and read results (covers both run modes below)

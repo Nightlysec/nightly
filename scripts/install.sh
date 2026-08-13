@@ -5,10 +5,10 @@ set -euo pipefail
 APP=nightly
 # TODO: point this at your own GitHub repo once you publish releases there —
 # this placeholder org doesn't exist, so downloads will fail until it's fixed.
-REPO="usenightly/nightly"
+REPO="nightlysec/nightly"
 # No published "nightly-sandbox" image exists yet; this still pulls the real
 # upstream Strix sandbox. .github/workflows/docker-sandbox.yml builds and
-# pushes ghcr.io/usenightly/nightly-sandbox on release once REPO above is
+# pushes ghcr.io/nightlysec/nightly-sandbox on release once REPO above is
 # real — update this default then, or build locally via scripts/docker.sh.
 NIGHTLY_IMAGE="ghcr.io/usestrix/strix-sandbox:1.3.0"
 

@@ -9,8 +9,8 @@ import (
 	"image/png"
 	"testing"
 
-	"github.com/usenightly/nightly/tui/internal/protocol"
-	"github.com/usenightly/nightly/tui/internal/render"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/render"
 )
 
 func benchImageDataURI(b *testing.B, w, h int) string {

@@ -6,7 +6,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/usenightly/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
 )
 
 func selectionModel(t *testing.T) Model {

@@ -9,7 +9,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/usenightly/nightly/tui/internal/render"
+	"github.com/nightlysec/nightly/tui/internal/render"
 )
 
 func (m Model) submit(value string) (tea.Model, tea.Cmd) {

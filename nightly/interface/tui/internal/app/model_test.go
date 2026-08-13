@@ -11,7 +11,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
-	"github.com/usenightly/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
 )
 
 type recordingConn struct{ bytes.Buffer }

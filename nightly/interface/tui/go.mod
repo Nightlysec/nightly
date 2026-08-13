@@ -1,4 +1,4 @@
-module github.com/usenightly/nightly/tui
+module github.com/nightlysec/nightly/tui
 
 go 1.24.0
 

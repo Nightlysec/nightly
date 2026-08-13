@@ -6,8 +6,8 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/usenightly/nightly/tui/internal/protocol"
-	"github.com/usenightly/nightly/tui/internal/render"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/render"
 )
 
 func (m *Model) handleEnvelope(envelope protocol.Envelope) tea.Cmd {

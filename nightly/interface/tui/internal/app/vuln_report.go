@@ -11,7 +11,7 @@ import (
 
 	"github.com/alecthomas/chroma/v2/lexers"
 
-	"github.com/usenightly/nightly/tui/internal/render"
+	"github.com/nightlysec/nightly/tui/internal/render"
 )
 
 var backtickRun = regexp.MustCompile("`+")

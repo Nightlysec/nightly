@@ -9,7 +9,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/ansi"
-	"github.com/usenightly/nightly/tui/internal/protocol"
+	"github.com/nightlysec/nightly/tui/internal/protocol"
 )
 
 // lastIndex returns the index of the last command of the given type, or -1.

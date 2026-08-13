@@ -10,7 +10,7 @@ Nightly is built to be driven by AI coding agents. Install the official agent sk
 Works with any agent that supports the open [SKILL.md standard](https://agentskills.io) — Claude Code, Cursor, Codex, Gemini CLI, OpenCode, and dozens more:
 
 ```bash
-npx skills add usenightly/nightly
+npx skills add nightlysec/nightly
 ```
 
 | Skill | What your agent learns |
@@ -20,10 +20,10 @@ npx skills add usenightly/nightly
 | `fix-security-vulnerabilities-with-nightly` | Triage findings, fix root causes, and re-run Nightly to verify each fix |
 | `ci-security-scanning-with-nightly` | Add PR security scanning to GitHub Actions or any CI (self-hosted CLI or managed app) |
 
-Install a single skill with `npx skills add usenightly/nightly --skill penetration-testing-with-nightly`, or use one without installing:
+Install a single skill with `npx skills add nightlysec/nightly --skill penetration-testing-with-nightly`, or use one without installing:
 
 ```bash
-npx skills use usenightly/nightly@penetration-testing-with-nightly | claude
+npx skills use nightlysec/nightly@penetration-testing-with-nightly | claude
 ```
 
 ## Two ways to run — self-hosted or managed
@@ -41,7 +41,7 @@ Everything an agent needs is machine-readable:
 - **REST API** — the managed platform exposes a documented [OpenAPI](https://docs.app.strix.ai/openapi.json) at `https://app.strix.ai/api/v1` (scans, vulnerabilities, assets, PR reviews, schedules, webhooks) with bearer tokens and scopes.
 - **Structured results** — every run writes `vulnerabilities.json`, `vulnerabilities.csv`, `findings.sarif` (SARIF 2.1.0), and per-finding Markdown under `nightly_runs/<run-name>/`; the cloud exposes the same as JSON plus SARIF export.
 - **Budget controls** — `--max-budget` and `--max-turns` give agents hard cost/time caps.
-- **`AGENTS.md`** — the [repository's agent guide](https://github.com/usenightly/nightly/blob/main/AGENTS.md) with a quick reference.
+- **`AGENTS.md`** — the [repository's agent guide](https://github.com/nightlysec/nightly/blob/main/AGENTS.md) with a quick reference.
 - **`llms.txt`** — this documentation is indexed at [docs.strix.ai/llms.txt](https://docs.strix.ai/llms.txt) and fully exported at [docs.strix.ai/llms-full.txt](https://docs.strix.ai/llms-full.txt); every page is also available as Markdown by appending `.md` to its URL.
 
 ## Example Prompts

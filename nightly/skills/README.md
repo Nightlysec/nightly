@@ -63,7 +63,7 @@ Skills focus on deep, specialized knowledge to significantly enhance agent capab
 
 ## 🤝 Contributing
 
-Community contributions are more than welcome — contribute new skills via [pull requests](https://github.com/usenightly/nightly/pulls) or [GitHub issues](https://github.com/usenightly/nightly/issues) to help expand the collection and improve extensibility for Nightly agents.
+Community contributions are more than welcome — contribute new skills via [pull requests](https://github.com/nightlysec/nightly/pulls) or [GitHub issues](https://github.com/nightlysec/nightly/issues) to help expand the collection and improve extensibility for Nightly agents.
 
 ---
 
